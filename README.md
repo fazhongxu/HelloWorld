@@ -8,6 +8,8 @@
 
     //@Component
 
+    //@Module
+
     //@Singleton
 
     //@Provides
