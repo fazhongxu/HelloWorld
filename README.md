@@ -6,8 +6,6 @@
 
     //@Inject
 
-    //@Singleton
-
     //@Component
 
     //@Singleton
