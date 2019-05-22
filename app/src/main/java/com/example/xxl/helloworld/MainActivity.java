@@ -3,11 +3,11 @@ package com.example.xxl.helloworld;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.xxl.helloworld.dagger2.DaggerStudentComponent;
 import com.example.xxl.helloworld.dagger2.Student;
 import com.example.xxl.helloworld.dagger2.StudentModule;
+import com.example.xxl.mediator_web.MediatorWeb;
 
 import javax.inject.Inject;
 /**
@@ -148,7 +148,9 @@ public class MainActivity extends AppCompatActivity  {
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "我是Student 我有值"+mStudent.toString(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this, "我是Student 我有值"+mStudent.toString(), Toast.LENGTH_SHORT).show();
+
+                MediatorWeb.startWeb("www.google.com");
             }
         });
     }

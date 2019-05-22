@@ -1,13 +1,14 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 28
+
     defaultConfig {
-        applicationId "com.example.xxl.helloworld"
         minSdkVersion 15
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
@@ -16,6 +17,7 @@ android {
             }
         }
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -23,9 +25,6 @@ android {
         }
     }
 
-    dataBinding {
-        enabled = true
-    }
 }
 
 dependencies {
@@ -35,11 +34,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation 'com.google.dagger:dagger:2.14.1'
-    annotationProcessor "com.google.dagger:dagger-compiler:2.14.1"
     api 'com.alibaba:arouter-api:1.5.0'
     annotationProcessor 'com.alibaba:arouter-compiler:1.2.2'
-    implementation project(':modules:module_web')
     implementation project(':modules:mediator_web')
-    implementation project(':module_framework:module_orgin')
 }

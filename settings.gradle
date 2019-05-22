@@ -1,1 +1,1 @@
-include ':app'
+include ':app', ':modules:module_web', ':modules:mediator_web', ':module_framework:module_orgin'
