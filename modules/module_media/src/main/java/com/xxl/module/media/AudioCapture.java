@@ -109,8 +109,11 @@ public class AudioCapture {
      * @return
      */
     public void startRecord() {
+        setPcmFileOutputPath();
+
         startRecord(DEFAULT_SOURCE, DEFAULT_SAMPLE_RATE,
                 DEFAULT_CHANNEL_CONFIG, DEFAULT_AUDIO_FORMAT);
+
     }
 
     /**
@@ -151,9 +154,9 @@ public class AudioCapture {
 
         Pcm2Wav pcm2Wav = new Pcm2Wav(DEFAULT_SAMPLE_RATE, DEFAULT_CHANNEL_CONFIG, DEFAULT_AUDIO_FORMAT);
 
-        String s = Environment.getExternalStorageDirectory() + File.separator + "123" + File.separator + "abc.wav";
+        String wavFilePath = Environment.getExternalStorageDirectory() + File.separator + "123" + File.separator + System.currentTimeMillis()+".wav";
 
-        pcm2Wav.pcmToWav(mPcmFilePath,s);
+        pcm2Wav.pcmToWav(mPcmFilePath,wavFilePath);
     }
 
     /**
@@ -210,22 +213,30 @@ public class AudioCapture {
         return true;
     }
 
+
+    private void setPcmFileOutputPath() {
+        mPcmFilePath = Environment.getExternalStorageDirectory() + File.separator +"123"+File.separator+ "tempPcmFile";
+        File file = new File(mPcmFilePath);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            mDos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private class AudioCaptureRunnable implements Runnable {
 
         @Override
         public void run() {
-            mPcmFilePath = Environment.getExternalStorageDirectory() + File.separator +"123"+File.separator+ "123.pcm";
-            File file = new File(mPcmFilePath);
-            if (!file.exists()) {
-                try {
-                    file.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
 
             try {
-                mDos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
 
                 while (!mIsLoopExit) {
 
