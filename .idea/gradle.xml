@@ -12,7 +12,9 @@
             <option value="$PROJECT_DIR$/module_framework" />
             <option value="$PROJECT_DIR$/module_framework/module_orgin" />
             <option value="$PROJECT_DIR$/modules" />
+            <option value="$PROJECT_DIR$/modules/mediator_media" />
             <option value="$PROJECT_DIR$/modules/mediator_web" />
+            <option value="$PROJECT_DIR$/modules/module_media" />
             <option value="$PROJECT_DIR$/modules/module_web" />
           </set>
         </option>

@@ -3,7 +3,7 @@
     package="com.example.xxl.module_web">
 
     <application>
-        <activity android:name=".WebViewActivity"></activity>
+        <activity android:name=".WebViewActivity"/>
     </application>
 
 </manifest>

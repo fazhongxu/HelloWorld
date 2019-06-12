@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.example.xxl.helloworld.dagger2.DaggerStudentComponent;
 import com.example.xxl.helloworld.dagger2.Student;
 import com.example.xxl.helloworld.dagger2.StudentModule;
-import com.example.xxl.mediator_web.MediatorWeb;
+import com.xxl.mediator.media.MediatorMedia;
 
 import javax.inject.Inject;
 /**
@@ -157,7 +157,8 @@ public class MainActivity extends AppCompatActivity  {
             public void onClick(View v) {
                 //Toast.makeText(MainActivity.this, "我是Student 我有值"+mStudent.toString(), Toast.LENGTH_SHORT).show();
 
-                MediatorWeb.startWeb("www.google.com");
+                        MediatorMedia.startMedia();
+//                        MediatorWeb.startWeb("www.google.com");
             }
         });
     }
