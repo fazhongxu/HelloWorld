@@ -3,6 +3,7 @@ package com.example.xxl.helloworld;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.TextView;
 
 import com.example.xxl.helloworld.dagger2.DaggerStudentComponent;
 import com.example.xxl.helloworld.dagger2.Student;
@@ -15,6 +16,11 @@ import javax.inject.Inject;
  */
 
 public class MainActivity extends AppCompatActivity  {
+    // Used to load the 'native-lib' library on application startup.
+    static {
+        System.loadLibrary("native-lib");
+    }
+
     @Inject
     Student mStudent;
 
@@ -22,6 +28,7 @@ public class MainActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         //需要快递 则需要快递员送过来
         // 依赖注入  如果不添加这句话 那么 mStudent 变量时一个null 因为 activity 并没有和student 关联起来
@@ -143,9 +150,9 @@ public class MainActivity extends AppCompatActivity  {
                 .build()
                 .inject(this);
 
-
-        findViewById(R.id.test_tv)
-                .setOnClickListener(new View.OnClickListener() {
+        TextView testTv = findViewById(R.id.test_tv);
+        testTv.setText(stringFromJNI());
+        testTv.setOnClickListener(new View.OnClickListener() {
                     @Override
             public void onClick(View v) {
                 //Toast.makeText(MainActivity.this, "我是Student 我有值"+mStudent.toString(), Toast.LENGTH_SHORT).show();
@@ -154,5 +161,11 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
     }
+
+    /**
+     * A native method that is implemented by the 'native-lib' native library,
+     * which is packaged with this application.
+     */
+    public native String stringFromJNI();
 
 }
