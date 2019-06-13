@@ -13,7 +13,9 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.xxl.mediator.media.IConstantMedia;
 import com.xxl.module.R;
 import com.xxl.module.media.audio.AudioCapture;
+import com.xxl.module.media.audio.AudioPlayListener;
 import com.xxl.module.media.audio.AudioPlayer;
+import com.xxl.module.media.audio.AudioRecordListener;
 
 import java.io.File;
 
@@ -22,7 +24,7 @@ import io.reactivex.functions.Consumer;
 
 
 @Route(path = IConstantMedia.MEDIA_PATH)
-public class MediaActivity extends AppCompatActivity implements View.OnClickListener {
+public class MediaActivity extends AppCompatActivity implements View.OnClickListener, AudioRecordListener, AudioPlayListener {
 
     private Button mRecordBtn;
     private Button mPlayBtn;
@@ -54,8 +56,9 @@ public class MediaActivity extends AppCompatActivity implements View.OnClickList
                             if (aBoolean) {
                                 if (!AudioCapture.getInstance().isCaptureStarted()) {
                                     String audioOutputpath = Environment.getExternalStorageDirectory() + File.separator + "HelloWorld";
-                                    AudioCapture.getInstance().startRecord(audioOutputpath);
-
+                                    AudioCapture.getInstance()
+                                            .setAudioRecordListener(MediaActivity.this)
+                                            .startRecord(audioOutputpath);
                                     mRecordBtn.setText(getString(R.string.media_stop));
                                 } else {
                                     AudioCapture.getInstance().stopRecord();
@@ -70,7 +73,8 @@ public class MediaActivity extends AppCompatActivity implements View.OnClickList
             try {
                 if (!AudioPlayer.getInstance().isPlaying()) {
                     mPlayBtn.setText(getString(R.string.media_stop));
-                    AudioPlayer.getInstance().play(AudioCapture.getInstance().getLastPcmFilePath());
+                    AudioPlayer.getInstance().setAudioPlayListener(MediaActivity.this)
+                            .play(AudioCapture.getInstance().getLastPcmFilePath());
                 } else {
                     AudioPlayer.getInstance().stop();
                     mPlayBtn.setText(getString(R.string.media_play));
@@ -81,5 +85,38 @@ public class MediaActivity extends AppCompatActivity implements View.OnClickList
 
         }
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AudioCapture.getInstance().onDestory();
+        AudioPlayer.getInstance().onDestory();
+    }
+
+    @Override
+    public void onRecordStart() {
+    }
+
+    @Override
+    public void onRecording() {
+    }
+
+    @Override
+    public void onRecordStop() {
+    }
+
+    @Override
+    public void onAudioPlayStart() {
+        mPlayBtn.setText(R.string.media_stop);
+    }
+
+    @Override
+    public void onAudioPlaying() {
+    }
+
+    @Override
+    public void onAudioPlayStop() {
+        mPlayBtn.setText(R.string.media_play);
     }
 }

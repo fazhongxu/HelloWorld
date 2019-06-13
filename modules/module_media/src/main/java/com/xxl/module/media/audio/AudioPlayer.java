@@ -1,9 +1,12 @@
 package com.xxl.module.media.audio;
 
+import android.annotation.SuppressLint;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import java.io.DataInputStream;
@@ -35,6 +38,38 @@ public class AudioPlayer {
     private Thread mPlayingThread;
     private DataInputStream mDataInputStream;
 
+    private AudioPlayListener mAudioPlayListener;
+
+    private static final int STATE_START = 0x0011;
+    private static final int STATE_PLAYING = 0x0022;
+    private static final int STATE_STOP = 0x0033;
+
+
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case STATE_START:
+                    if (mAudioPlayListener != null) {
+                        mAudioPlayListener.onAudioPlayStart();
+                    }
+                    break;
+                case STATE_PLAYING:
+                    if (mAudioPlayListener != null) {
+                        mAudioPlayListener.onAudioPlaying();
+                    }
+                    break;
+                case STATE_STOP:
+                    if (mAudioPlayListener != null) {
+                        mAudioPlayListener.onAudioPlayStop();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     private AudioPlayer() {
 
@@ -79,8 +114,14 @@ public class AudioPlayer {
 
     }
 
+    public AudioPlayer setAudioPlayListener(AudioPlayListener audioPlayListener) {
+        this.mAudioPlayListener = audioPlayListener;
+        return this;
+    }
+
     /**
      * 正在播放
+     *
      * @return
      */
     public boolean isPlaying() {
@@ -90,30 +131,35 @@ public class AudioPlayer {
     /**
      * 开始播放录音
      */
-    public synchronized void play(String filePath){
+    public synchronized void play(String filePath) {
         if (mAudioTrack == null) {
             initConfig();
         }
-        Log.e(TAG,"播放状态："+mAudioTrack.getState());
+        Log.e(TAG, "播放状态：" + mAudioTrack.getState());
         if (mIsPlaying) {
             return;
         }
 
         if (!new File(filePath).exists()) {
-            Log.e(TAG, "播放的音频文件不存在！" );
+            Log.e(TAG, "播放的音频文件不存在！");
             return;
         }
 
-        if (null != mAudioTrack && mAudioTrack.getState() == AudioTrack.STATE_INITIALIZED){
+        if (null != mAudioTrack && mAudioTrack.getState() == AudioTrack.STATE_INITIALIZED) {
             mAudioTrack.play();
         }
+
+        mHandler.sendEmptyMessage(STATE_START);
+        Log.d(TAG, "开始播放 ...");
+
         mIsPlaying = true;
-        mPlayingThread = new Thread(new PlayingRunnable(filePath),"PlayingThread");
+        mPlayingThread = new Thread(new PlayingRunnable(filePath), "PlayingThread");
         mPlayingThread.start();
     }
 
-    class PlayingRunnable implements Runnable{
+    class PlayingRunnable implements Runnable {
         private String mFilePath;
+
         public PlayingRunnable(String filePath) {
             this.mFilePath = filePath;
         }
@@ -125,10 +171,13 @@ public class AudioPlayer {
                 mDataInputStream = new DataInputStream(fileInputStream);
                 byte[] audioDataArray = new byte[mMinBufferSize];
                 int readLength = 0;
-                while (mDataInputStream.available() > 0){
+                while (mDataInputStream.available() > 0) {
                     readLength = mDataInputStream.read(audioDataArray);
+
                     if (readLength > 0) {
                         if (mAudioTrack != null && mAudioTrack.getPlayState() != AudioTrack.PLAYSTATE_STOPPED) {
+                            Log.d(TAG, "正在播放... ");
+                            mHandler.sendEmptyMessage(STATE_PLAYING);
                             mAudioTrack.write(audioDataArray, 0, readLength);
                         }
                     }
@@ -145,27 +194,31 @@ public class AudioPlayer {
     /**
      * 停止播放
      */
-    public synchronized void stop(){
+    public synchronized void stop() {
         try {
-            if (mAudioTrack != null){
+            if (mAudioTrack != null) {
 
                 mIsPlaying = false;
 
-                //首先停止播放
-
-                if (mAudioTrack.getState() !=  AudioTrack.STATE_UNINITIALIZED) {
-                    if(mAudioTrack.getPlayState() != AudioTrack.PLAYSTATE_STOPPED) {
+                //停止播放
+                if (mAudioTrack.getState() != AudioTrack.STATE_UNINITIALIZED) {
+                    if (mAudioTrack.getPlayState() != AudioTrack.PLAYSTATE_STOPPED) {
                         mAudioTrack.stop();
                     }
                 }
 
                 //关闭线程
-                if (mPlayingThread != null){
+                if (mPlayingThread != null) {
                     mPlayingThread.interrupt();
                     mPlayingThread = null;
                 }
+
+                mHandler.sendEmptyMessage(STATE_STOP);
+                Log.d(TAG, "停止播放...");
+
                 //释放资源
                 release();
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -175,10 +228,21 @@ public class AudioPlayer {
     /**
      * 释放资源
      */
-    public void release(){
+    public void release() {
         if (mAudioTrack.getState() == AudioRecord.STATE_INITIALIZED) {
             mAudioTrack.release();
             mAudioTrack = null;
+        }
+    }
+
+    /**
+     * 销毁 页面调用
+     */
+    public void onDestory() {
+        stop();
+        if (mHandler != null) {
+            mHandler.removeCallbacksAndMessages(null);
+            mHandler = null;
         }
     }
 

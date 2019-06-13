@@ -1,9 +1,12 @@
 package com.xxl.module.media.audio;
 
+import android.annotation.SuppressLint;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import java.io.BufferedOutputStream;
@@ -72,20 +75,44 @@ public class AudioCapture {
 
     private volatile boolean mIsLoopExit = false;
 
-    private OnAudioFrameCapturedListener mAudioFrameCapturedListener;
     private Thread mCaptureThread;
     private DataOutputStream mDos;
 
     private String mPcmFilePath;
     private String mWavFilePath;
 
-    public interface OnAudioFrameCapturedListener {
-        void onAudioFrameCaptured(byte[] audioData);
-    }
+    private AudioRecordListener mAudioRecordListener;
 
-    public void setAudioFrameCapturedListener(OnAudioFrameCapturedListener audioFrameCapturedListener) {
-        mAudioFrameCapturedListener = audioFrameCapturedListener;
-    }
+    private static final int STATE_START = 0x0011;
+    private static final int STATE_RECORDING = 0x0022;
+    private static final int STATE_STOP = 0x0033;
+
+
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case STATE_START:
+                    if (mAudioRecordListener != null) {
+                        mAudioRecordListener.onRecordStart();
+                    }
+                    break;
+                case STATE_RECORDING:
+                    if (mAudioRecordListener != null) {
+                        mAudioRecordListener.onRecording();
+                    }
+                    break;
+                case STATE_STOP:
+                    if (mAudioRecordListener != null) {
+                        mAudioRecordListener.onRecordStop();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     private AudioCapture() {
 
@@ -149,25 +176,35 @@ public class AudioCapture {
                 e.printStackTrace();
             }
             mAudioRecord.stop();
+
+            mHandler.sendEmptyMessage(STATE_STOP);
+            Log.d(TAG, "停止录制 ... ");
         }
 
         mAudioRecord.release();
 
         mIsCaptureStarted = false;
-        mAudioFrameCapturedListener = null;
 
         Log.d(TAG, "Stop audio capture success !");
 
 
         Pcm2Wav pcm2Wav = new Pcm2Wav(DEFAULT_SAMPLE_RATE, DEFAULT_CHANNEL_CONFIG, DEFAULT_AUDIO_FORMAT);
 
-//        mWavFilePath = Environment.getExternalStorageDirectory() + File.separator + "123" + File.separator + System.currentTimeMillis()+".wav";
         File wavDir = new File(mWavFilePath);
         if (!wavDir.exists()) {
             wavDir.mkdirs();
         }
         File wavFile = new File(wavDir, System.currentTimeMillis() + ".wav");
-        pcm2Wav.pcmToWav(mPcmFilePath, wavFile.getAbsolutePath());
+        if (!wavFile.exists()) {
+            try {
+                boolean createSuccess = wavFile.createNewFile();
+                if (createSuccess) {
+                    pcm2Wav.pcmToWav(mPcmFilePath, wavFile.getAbsolutePath());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public String getLastWavFilePath() {
@@ -176,6 +213,11 @@ public class AudioCapture {
 
     public String getLastPcmFilePath() {
         return mPcmFilePath;
+    }
+
+    public AudioCapture setAudioRecordListener(AudioRecordListener audioRecordListener) {
+        this.mAudioRecordListener = audioRecordListener;
+        return this;
     }
 
     /**
@@ -224,6 +266,8 @@ public class AudioCapture {
         mCaptureThread = new Thread(new AudioCaptureRunnable());
         mCaptureThread.start();
 
+        mHandler.sendEmptyMessage(STATE_START);
+        Log.d(TAG, "开始录制 ...");
         mIsCaptureStarted = true;
 
         Log.d(TAG, "Start audio capture success !");
@@ -240,7 +284,7 @@ public class AudioCapture {
             pcmDir.mkdirs();
         }
         try {
-            File pcmFile = new File(pcmDirPath,"tempPcm");
+            File pcmFile = new File(pcmDirPath, "tempPcm");
             if (!pcmFile.exists()) {
                 pcmFile.createNewFile();
             }
@@ -269,9 +313,8 @@ public class AudioCapture {
                     } else if (ret == AudioRecord.ERROR_BAD_VALUE) {
                         Log.e(TAG, "Error ERROR_BAD_VALUE");
                     } else {
-                        if (mAudioFrameCapturedListener != null) {
-                            //mAudioFrameCapturedListener.onAudioFrameCaptured(buffer);
-                        }
+                        Log.d(TAG, "录制中 ... ");
+                        mHandler.sendEmptyMessage(STATE_RECORDING);
                         Log.d(TAG, "OK, Captured " + ret + " bytes !");
 
                         for (int i = 0; i < ret; i++) {
@@ -284,6 +327,16 @@ public class AudioCapture {
             }
         }
 
+    }
+
+    /**
+     * 销毁 页面调用
+     */
+    public void onDestory() {
+        stopRecord();
+        if (mHandler != null) {
+            mHandler.removeCallbacksAndMessages(null);
+        }
     }
 
 }
