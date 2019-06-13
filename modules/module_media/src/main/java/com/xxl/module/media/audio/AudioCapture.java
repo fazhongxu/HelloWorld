@@ -336,6 +336,7 @@ public class AudioCapture {
         stopRecord();
         if (mHandler != null) {
             mHandler.removeCallbacksAndMessages(null);
+            mHandler = null;
         }
     }
 

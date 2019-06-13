@@ -59,10 +59,8 @@ public class MediaActivity extends AppCompatActivity implements View.OnClickList
                                     AudioCapture.getInstance()
                                             .setAudioRecordListener(MediaActivity.this)
                                             .startRecord(audioOutputpath);
-                                    mRecordBtn.setText(getString(R.string.media_stop));
                                 } else {
                                     AudioCapture.getInstance().stopRecord();
-                                    mRecordBtn.setText(getString(R.string.media_record));
                                 }
                             } else {
                                 Toast.makeText(MediaActivity.this, "请打开录音权限", Toast.LENGTH_SHORT).show();
@@ -72,12 +70,10 @@ public class MediaActivity extends AppCompatActivity implements View.OnClickList
         } else if (id == R.id.media_play) {
             try {
                 if (!AudioPlayer.getInstance().isPlaying()) {
-                    mPlayBtn.setText(getString(R.string.media_stop));
                     AudioPlayer.getInstance().setAudioPlayListener(MediaActivity.this)
                             .play(AudioCapture.getInstance().getLastPcmFilePath());
                 } else {
                     AudioPlayer.getInstance().stop();
-                    mPlayBtn.setText(getString(R.string.media_play));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -96,6 +92,7 @@ public class MediaActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onRecordStart() {
+        mRecordBtn.setText(getString(R.string.media_stop));
     }
 
     @Override
@@ -104,6 +101,7 @@ public class MediaActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onRecordStop() {
+        mRecordBtn.setText(getString(R.string.media_record));
     }
 
     @Override
