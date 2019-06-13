@@ -2,6 +2,7 @@ package com.xxl.module.media;
 
 import android.Manifest;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +14,8 @@ import com.xxl.mediator.media.IConstantMedia;
 import com.xxl.module.R;
 import com.xxl.module.media.audio.AudioCapture;
 import com.xxl.module.media.audio.AudioPlayer;
+
+import java.io.File;
 
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -50,7 +53,8 @@ public class MediaActivity extends AppCompatActivity implements View.OnClickList
                         public void accept(Boolean aBoolean) throws Exception {
                             if (aBoolean) {
                                 if (!AudioCapture.getInstance().isCaptureStarted()) {
-                                    AudioCapture.getInstance().startRecord();
+                                    String audioOutputpath = Environment.getExternalStorageDirectory() + File.separator + "HelloWorld";
+                                    AudioCapture.getInstance().startRecord(audioOutputpath);
 
                                     mRecordBtn.setText(getString(R.string.media_stop));
                                 } else {

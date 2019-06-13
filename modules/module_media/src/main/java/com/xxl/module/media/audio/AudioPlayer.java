@@ -32,7 +32,6 @@ public class AudioPlayer {
     private AudioTrack mAudioTrack;
 
     private boolean mIsPlaying = false;
-    private String mFilePath = "";
     private Thread mPlayingThread;
     private DataInputStream mDataInputStream;
 
@@ -49,12 +48,12 @@ public class AudioPlayer {
         return Holder.INSTANCE;
     }
 
-    public void initConfig() {
+    private void initConfig() {
         config(DEFAULT_STREAM_TYPE, DEFAULT_SAMPLE_RATE,
                 DEFAULT_CHANNEL_CONFIG, DEFAULT_AUDIO_FORMAT, DEFAULT_PLAY_MODE);
     }
 
-    public boolean config(int streamType, int sampleRateInHz, int channelConfig, int audioFormat, int mode) {
+    private boolean config(int streamType, int sampleRateInHz, int channelConfig, int audioFormat, int mode) {
         if (mIsPlaying) {
             Log.e(TAG, "Player already started !");
             return false;
@@ -92,22 +91,33 @@ public class AudioPlayer {
      * 开始播放录音
      */
     public synchronized void play(String filePath){
-        initConfig();
+        if (mAudioTrack == null) {
+            initConfig();
+        }
         Log.e(TAG,"播放状态："+mAudioTrack.getState());
         if (mIsPlaying) {
+            return;
+        }
+
+        if (!new File(filePath).exists()) {
+            Log.e(TAG, "播放的音频文件不存在！" );
             return;
         }
 
         if (null != mAudioTrack && mAudioTrack.getState() == AudioTrack.STATE_INITIALIZED){
             mAudioTrack.play();
         }
-        this.mFilePath = filePath;
         mIsPlaying = true;
-        mPlayingThread = new Thread(new PlayingRunnable(),"PlayingThread");
+        mPlayingThread = new Thread(new PlayingRunnable(filePath),"PlayingThread");
         mPlayingThread.start();
     }
 
     class PlayingRunnable implements Runnable{
+        private String mFilePath;
+        public PlayingRunnable(String filePath) {
+            this.mFilePath = filePath;
+        }
+
         @Override
         public void run() {
             try {
@@ -118,7 +128,9 @@ public class AudioPlayer {
                 while (mDataInputStream.available() > 0){
                     readLength = mDataInputStream.read(audioDataArray);
                     if (readLength > 0) {
-                        mAudioTrack.write(audioDataArray,0,readLength);
+                        if (mAudioTrack != null && mAudioTrack.getPlayState() != AudioTrack.PLAYSTATE_STOPPED) {
+                            mAudioTrack.write(audioDataArray, 0, readLength);
+                        }
                     }
                 }
                 stop();
@@ -133,26 +145,25 @@ public class AudioPlayer {
     /**
      * 停止播放
      */
-    public void stop(){
+    public synchronized void stop(){
         try {
             if (mAudioTrack != null){
 
                 mIsPlaying = false;
 
                 //首先停止播放
-                mAudioTrack.stop();
 
-                //关闭线程
-                try {
-                    if (mPlayingThread != null){
-                        mPlayingThread.interrupt();
-                        mPlayingThread.join();
-                        mPlayingThread = null;
+                if (mAudioTrack.getState() !=  AudioTrack.STATE_UNINITIALIZED) {
+                    if(mAudioTrack.getPlayState() != AudioTrack.PLAYSTATE_STOPPED) {
+                        mAudioTrack.stop();
                     }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
 
+                //关闭线程
+                if (mPlayingThread != null){
+                    mPlayingThread.interrupt();
+                    mPlayingThread = null;
+                }
                 //释放资源
                 release();
             }

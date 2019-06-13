@@ -107,9 +107,11 @@ public class AudioCapture {
     /**
      * 开始录制
      *
+     * @param audioOutputPath
      * @return
      */
-    public void startRecord() {
+    public void startRecord(String audioOutputPath) {
+        this.mWavFilePath = audioOutputPath;
         setPcmFileOutputPath();
 
         startRecord(DEFAULT_SOURCE, DEFAULT_SAMPLE_RATE,
@@ -159,9 +161,13 @@ public class AudioCapture {
 
         Pcm2Wav pcm2Wav = new Pcm2Wav(DEFAULT_SAMPLE_RATE, DEFAULT_CHANNEL_CONFIG, DEFAULT_AUDIO_FORMAT);
 
-        mWavFilePath = Environment.getExternalStorageDirectory() + File.separator + "123" + File.separator + System.currentTimeMillis()+".wav";
-
-        pcm2Wav.pcmToWav(mPcmFilePath, mWavFilePath);
+//        mWavFilePath = Environment.getExternalStorageDirectory() + File.separator + "123" + File.separator + System.currentTimeMillis()+".wav";
+        File wavDir = new File(mWavFilePath);
+        if (!wavDir.exists()) {
+            wavDir.mkdirs();
+        }
+        File wavFile = new File(wavDir, System.currentTimeMillis() + ".wav");
+        pcm2Wav.pcmToWav(mPcmFilePath, wavFile.getAbsolutePath());
     }
 
     public String getLastWavFilePath() {
@@ -228,17 +234,18 @@ public class AudioCapture {
 
 
     private void setPcmFileOutputPath() {
-        mPcmFilePath = Environment.getExternalStorageDirectory() + File.separator +"123"+File.separator+ "tempPcmFile";
-        File file = new File(mPcmFilePath);
-        if (!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        String pcmDirPath = Environment.getExternalStorageDirectory() + File.separator + "666";
+        File pcmDir = new File(pcmDirPath);
+        if (!pcmDir.exists()) {
+            pcmDir.mkdirs();
         }
         try {
-            mDos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
+            File pcmFile = new File(pcmDirPath,"tempPcm");
+            if (!pcmFile.exists()) {
+                pcmFile.createNewFile();
+            }
+            mPcmFilePath = pcmFile.getAbsolutePath();
+            mDos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(pcmFile)));
         } catch (Exception e) {
             e.printStackTrace();
         }
