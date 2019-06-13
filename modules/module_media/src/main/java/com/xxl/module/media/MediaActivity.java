@@ -11,6 +11,8 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.xxl.mediator.media.IConstantMedia;
 import com.xxl.module.R;
+import com.xxl.module.media.audio.AudioCapture;
+import com.xxl.module.media.audio.AudioPlayer;
 
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -51,7 +53,7 @@ public class MediaActivity extends AppCompatActivity implements View.OnClickList
                                     AudioCapture.getInstance().startRecord();
 
                                     mRecordBtn.setText(getString(R.string.media_stop));
-                                }else {
+                                } else {
                                     AudioCapture.getInstance().stopRecord();
                                     mRecordBtn.setText(getString(R.string.media_record));
                                 }
@@ -60,7 +62,19 @@ public class MediaActivity extends AppCompatActivity implements View.OnClickList
                             }
                         }
                     });
-        }else if(id == R.id.media_play) {
+        } else if (id == R.id.media_play) {
+            try {
+                if (!AudioPlayer.getInstance().isPlaying()) {
+                    mPlayBtn.setText(getString(R.string.media_stop));
+                    AudioPlayer.getInstance().play(AudioCapture.getInstance().getLastPcmFilePath());
+                } else {
+                    AudioPlayer.getInstance().stop();
+                    mPlayBtn.setText(getString(R.string.media_play));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         }
 
     }

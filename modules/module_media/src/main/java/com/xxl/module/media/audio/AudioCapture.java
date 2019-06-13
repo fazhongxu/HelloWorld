@@ -1,4 +1,4 @@
-package com.xxl.module.media;
+package com.xxl.module.media.audio;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -53,7 +53,7 @@ public class AudioCapture {
      * 通道数的配置，可选的值以常量的形式定义在 AudioFormat 类中，常用的是 CHANNEL_IN_MONO（单通道），
      * CHANNEL_IN_STEREO（双通道）
      */
-    private static final int DEFAULT_CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;
+    private static final int DEFAULT_CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_STEREO;
 
     /**
      * 默认数据位宽
@@ -77,6 +77,7 @@ public class AudioCapture {
     private DataOutputStream mDos;
 
     private String mPcmFilePath;
+    private String mWavFilePath;
 
     public interface OnAudioFrameCapturedListener {
         void onAudioFrameCaptured(byte[] audioData);
@@ -114,6 +115,10 @@ public class AudioCapture {
         startRecord(DEFAULT_SOURCE, DEFAULT_SAMPLE_RATE,
                 DEFAULT_CHANNEL_CONFIG, DEFAULT_AUDIO_FORMAT);
 
+    }
+
+    public int getMinBufferSize() {
+        return mMinBufferSize;
     }
 
     /**
@@ -154,9 +159,17 @@ public class AudioCapture {
 
         Pcm2Wav pcm2Wav = new Pcm2Wav(DEFAULT_SAMPLE_RATE, DEFAULT_CHANNEL_CONFIG, DEFAULT_AUDIO_FORMAT);
 
-        String wavFilePath = Environment.getExternalStorageDirectory() + File.separator + "123" + File.separator + System.currentTimeMillis()+".wav";
+        mWavFilePath = Environment.getExternalStorageDirectory() + File.separator + "123" + File.separator + System.currentTimeMillis()+".wav";
 
-        pcm2Wav.pcmToWav(mPcmFilePath,wavFilePath);
+        pcm2Wav.pcmToWav(mPcmFilePath, mWavFilePath);
+    }
+
+    public String getLastWavFilePath() {
+        return mWavFilePath;
+    }
+
+    public String getLastPcmFilePath() {
+        return mPcmFilePath;
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.xxl.module.media;
+package com.xxl.module.media.audio;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -34,7 +34,7 @@ public class Pcm2Wav {
      * @param channel    channel、声道
      * @param encoding   Audio data format、音频格式
      */
-    Pcm2Wav(int sampleRate, int channel, int encoding) {
+    public Pcm2Wav(int sampleRate, int channel, int encoding) {
         this.mSampleRate = sampleRate;
         this.mChannel = channel;
         this.mBufferSize = AudioRecord.getMinBufferSize(mSampleRate, mChannel, encoding);
