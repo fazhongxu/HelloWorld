@@ -2,6 +2,7 @@ package com.example.xxl.module_web;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Autowired;
@@ -24,5 +25,11 @@ public class WebViewActivity extends AppCompatActivity {
         //String url = getIntent().getStringExtra(IConstantWeb.KEY_URL);
         TextView webUrlTv = findViewById(R.id.web_url_tv);
         webUrlTv.setText(mUrl);
+
+        Log.e("aaa", "onCreate: "+mUrl );
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fl_container,TestFragment.newInstance(getIntent().getExtras()))
+        .commitAllowingStateLoss();
     }
 }
