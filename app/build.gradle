@@ -1,12 +1,16 @@
 apply plugin: 'com.android.application'
 
+
 android {
+
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.xxl.helloworld"
         minSdkVersion 15
         targetSdkVersion 28
-        versionCode 1
+
+        versionCode gitVersionCode()
+
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -40,6 +44,11 @@ android {
     }
 }
 
+static def gitVersionCode() {
+    def cmd = 'git rev-list HEAD --count'
+    cmd.execute().text.trim().toString().toInteger()
+}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:28.0.0'
@@ -57,3 +66,4 @@ dependencies {
     implementation project(':modules:mediator_media')
     implementation project(':modules:module_media')
 }
+
