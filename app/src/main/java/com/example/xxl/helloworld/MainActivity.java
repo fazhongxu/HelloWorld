@@ -6,9 +6,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.xxl.helloworld.dagger2.DaggerStudentComponent;
-import com.example.xxl.helloworld.dagger2.Student;
 import com.example.xxl.helloworld.dagger2.StudentModule;
-import com.example.xxl.mediator_web.MediatorWeb;
+import com.example.xxl.helloworld.dagger2.animal.AnimalModule;
+import com.example.xxl.helloworld.dagger2.animal.DaggerAnimalComponent;
+import com.example.xxl.helloworld.dagger2.animal.Test;
 
 import javax.inject.Inject;
 /**
@@ -21,8 +22,11 @@ public class MainActivity extends AppCompatActivity  {
         System.loadLibrary("native-lib");
     }
 
+//    @Inject
+//    Student mStudent;
+
     @Inject
-    Student mStudent;
+    Test mTest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,9 +148,16 @@ public class MainActivity extends AppCompatActivity  {
          */
 
 
-        DaggerStudentComponent
-                .builder()
-                .studentModule(new StudentModule(this))
+//        DaggerStudentComponent
+//                .builder()
+//                .studentModule(new StudentModule(this))
+//                .build()
+//                .inject(this);
+
+
+
+        DaggerAnimalComponent.builder()
+                .animalModule(new AnimalModule())
                 .build()
                 .inject(this);
 
@@ -158,7 +169,8 @@ public class MainActivity extends AppCompatActivity  {
                 //Toast.makeText(MainActivity.this, "我是Student 我有值"+mStudent.toString(), Toast.LENGTH_SHORT).show();
 
 //                        MediatorMedia.startMedia();
-                        MediatorWeb.startWeb("www.google.com");
+//                        MediatorWeb.startWeb("www.google.com");
+                        mTest.eat();
             }
         });
     }

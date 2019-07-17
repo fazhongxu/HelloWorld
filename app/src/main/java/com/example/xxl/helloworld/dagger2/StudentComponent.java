@@ -74,5 +74,6 @@ import dagger.Component;
 @Singleton  // @Singleton 单例
 @Component(modules = StudentModule.class)
 public interface StudentComponent {
-    void inject(MainActivity mainActivity);
+    //先注释 同一个类不能inject 2次
+    //void inject(MainActivity mainActivity);
 }

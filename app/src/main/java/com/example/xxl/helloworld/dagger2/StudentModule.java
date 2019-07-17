@@ -1,6 +1,12 @@
 package com.example.xxl.helloworld.dagger2;
 
 import com.example.xxl.helloworld.MainActivity;
+import com.example.xxl.helloworld.dagger2.animal.Animal;
+import com.example.xxl.helloworld.dagger2.animal.Cat;
+import com.example.xxl.helloworld.dagger2.animal.Dog;
+import com.example.xxl.helloworld.dagger2.animal.ForCat;
+import com.example.xxl.helloworld.dagger2.animal.ForDog;
+import com.example.xxl.helloworld.dagger2.animal.Test;
 
 import javax.inject.Singleton;
 
