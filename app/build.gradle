@@ -65,5 +65,8 @@ dependencies {
     implementation project(':module_framework:module_orgin')
     implementation project(':modules:mediator_media')
     implementation project(':modules:module_media')
+
+    implementation "io.reactivex.rxjava3:rxjava:3.0.0-RC1"
+
 }
 

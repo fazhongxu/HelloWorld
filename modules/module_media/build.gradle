@@ -39,6 +39,10 @@ dependencies {
     api 'com.alibaba:arouter-api:1.5.0'
     annotationProcessor 'com.alibaba:arouter-compiler:1.2.2'
     implementation project(':modules:mediator_media')
-    implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
+    implementation "io.reactivex.rxjava3:rxjava:3.0.0-RC1"
+    //rxpermission 里面依赖了 rxjava 本地想使用rxjava 版本不同 所以如下方式处理
+    implementation ('com.github.tbruyelle:rxpermissions:0.10.2') {
+        exclude module: 'rxjava'
+    }
 
 }
