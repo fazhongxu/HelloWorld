@@ -1,12 +1,10 @@
 package com.example.xxl.helloworld;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.xxl.helloworld.dagger2.DaggerStudentComponent;
-import com.example.xxl.helloworld.dagger2.StudentModule;
 import com.example.xxl.helloworld.dagger2.animal.AnimalModule;
 import com.example.xxl.helloworld.dagger2.animal.DaggerAnimalComponent;
 import com.example.xxl.helloworld.dagger2.animal.Test;
