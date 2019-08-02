@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".WebViewActivity">
+    tools:context="com.xxl.example.web.WebViewActivity">
 
     <TextView
         android:id="@+id/web_url_tv"
