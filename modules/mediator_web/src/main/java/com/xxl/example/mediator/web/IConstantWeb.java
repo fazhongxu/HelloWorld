@@ -15,4 +15,10 @@ public interface IConstantWeb {
      * url
      */
     String KEY_URL = "key_url";
+
+    /**
+     * web provider
+     */
+    String WEB_PROVIDER = "/web/provider";
+
 }

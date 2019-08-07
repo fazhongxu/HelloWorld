@@ -2,7 +2,12 @@ package com.xxl.example;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
 
 import com.xxl.example.dagger2.animal.AnimalModule;
@@ -161,15 +166,12 @@ public class MainActivity extends AppCompatActivity  {
                 .inject(this);
 
         TextView testTv = findViewById(R.id.test_tv);
+
         testTv.setText(stringFromJNI());
         testTv.setOnClickListener(new View.OnClickListener() {
                     @Override
             public void onClick(View v) {
-                //Toast.makeText(MainActivity.this, "我是Student 我有值"+mStudent.toString(), Toast.LENGTH_SHORT).show();
-
-//                        MediatorMedia.startMedia();
-                        MediatorWeb.startWeb("https://www.baidu.com");
-//                        mTest.eat();
+            Log.e("aaa", "onClick: "+MediatorWeb.getUserName());
             }
         });
     }

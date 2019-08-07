@@ -17,4 +17,22 @@ public class MediatorWeb {
                 .withString(IConstantWeb.KEY_URL,url)
                 .navigation();
     }
+
+    /**
+     * 获取web模块的 provider
+     * @return
+     */
+    public static IWebProvider getWebProvider() {
+       return (IWebProvider) ARouter.getInstance()
+               .build(IConstantWeb.WEB_PROVIDER)
+               .navigation();
+    }
+
+    /**
+     * 获取用户名称
+     * @return
+     */
+    public static String getUserName() {
+        return getWebProvider().getUserName("001");
+    }
 }
