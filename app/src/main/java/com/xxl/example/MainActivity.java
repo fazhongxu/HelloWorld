@@ -1,6 +1,7 @@
 package com.xxl.example;
 
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
@@ -13,14 +14,16 @@ import android.widget.TextView;
 import com.xxl.example.dagger2.animal.AnimalModule;
 import com.xxl.example.dagger2.animal.DaggerAnimalComponent;
 import com.xxl.example.dagger2.animal.Test;
+import com.xxl.example.mediator.dagger.MediatorDagger;
 import com.xxl.example.mediator.web.MediatorWeb;
 
 import javax.inject.Inject;
+
 /**
  * MainActivity 类似于 咱们的家  需要在家里面等快递
  */
 
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity {
     // Used to load the 'native-lib' library on application startup.
     static {
         System.loadLibrary("native-lib");
@@ -159,7 +162,6 @@ public class MainActivity extends AppCompatActivity  {
 //                .inject(this);
 
 
-
         DaggerAnimalComponent.builder()
                 .animalModule(new AnimalModule())
                 .build()
@@ -169,9 +171,10 @@ public class MainActivity extends AppCompatActivity  {
 
         testTv.setText(stringFromJNI());
         testTv.setOnClickListener(new View.OnClickListener() {
-                    @Override
+            @Override
             public void onClick(View v) {
-            Log.e("aaa", "onClick: "+MediatorWeb.getUserName());
+                MediatorDagger.startDagger();
+//            Log.e("aaa", "onClick: "+MediatorWeb.getUserName());
             }
         });
     }

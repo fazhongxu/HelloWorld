@@ -1,1 +1,8 @@
-include ':app', ':modules:module_web', ':modules:mediator_web', ':module_framework:module_orgin', ':modules:module_media', ':modules:mediator_media'
+include ':app',
+        ':module_framework:module_orgin',
+        ':modules:module_web',
+        ':modules:mediator_web',
+        ':modules:module_media',
+        ':modules:mediator_media',
+        ':modules:mediator_dagger',
+        ':modules:module_dagger'
