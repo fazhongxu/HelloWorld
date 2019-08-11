@@ -1,0 +1,56 @@
+
+ext.deps = [:]
+def versions = [:]
+    //arouter
+    versions.routerApi = "1.5.0"
+    versions.routerCompiler = "1.2.2"
+
+    //view
+    versions.appcompat = "1.0.0"
+    versions.constraintlayout = "1.1.3"
+
+    //dagger
+    versions.dagger = "2.14.1"
+    versions.daggerCompiler = "2.14.1"
+
+    //rxjava
+    versions.rxjava = "3.0.0-RC1"
+
+    //rxpermission
+    versions.rxPermission = "0.10.2"
+
+//androidx
+def androidx = [:]
+    androidx.appcompat = "androidx.appcompat:appcompat:$versions.appcompat"
+    androidx.constraintlayout = "androidx.constraintlayout:constraintlayout:$versions.constraintlayout"
+    deps.androidx = androidx
+
+//arouter
+def arouter = [:]
+    arouter.routerApi = "com.alibaba:arouter-api:$versions.routerApi"
+    arouter.routerCompiler = "com.alibaba:arouter-compiler:$versions.routerCompiler"
+    deps.arouter = arouter
+
+//dagger
+def dagger = [:]
+    dagger.dagger = "com.google.dagger:dagger:$versions.dagger"
+    dagger.daggerCompiler = "com.google.dagger:dagger-compiler:$versions.daggerCompiler"
+    deps.dagger = dagger
+
+//rxjava
+def rxjava = [:]
+    rxjava.rxjava = "io.reactivex.rxjava3:rxjava:$versions.rxjava"
+    deps.rxjava = rxjava
+
+//other
+
+//rxpermission
+    deps.rxPermission = "com.github.tbruyelle:rxpermissions:$versions.rxPermission"
+
+static def addRepos(RepositoryHandler handler) {
+    handler.google()
+    handler.jcenter()
+    //Add the JitPack repository
+    handler.maven { url "https://jitpack.io" }
+}
+ext.addRepos = this.&addRepos

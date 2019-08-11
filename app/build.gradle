@@ -3,15 +3,19 @@ apply plugin: 'com.android.application'
 
 android {
 
-    compileSdkVersion 28
+    compileSdkVersion COMPILE_SDK_VERSION as int
+
+    buildToolsVersion BUILD_TOOLS_VERSION
+
     defaultConfig {
         applicationId "com.xxl.example"
-        minSdkVersion 15
-        targetSdkVersion 28
+        minSdkVersion MIN_SDK_VERSION as int
+        targetSdkVersion TARGET_SDK_VERSION as int
 
         versionCode gitVersionCode()
 
-        versionName "1.0"
+        versionName VERSION_NAME
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
@@ -56,15 +60,14 @@ static def gitVersionCode() {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
-    implementation 'com.google.dagger:dagger:2.14.1'
-    annotationProcessor "com.google.dagger:dagger-compiler:2.14.1"
-    api 'com.alibaba:arouter-api:1.5.0'
-    annotationProcessor 'com.alibaba:arouter-compiler:1.2.2'
+    implementation deps.androidx.appcompat
+    implementation deps.androidx.constraintlayout
+
+    implementation deps.dagger.dagger
+    annotationProcessor deps.dagger.daggerCompiler
+
+    api deps.arouter.routerApi
+    annotationProcessor deps.arouter.routerCompiler
     implementation project(':modules:module_web')
     implementation project(':modules:mediator_web')
     implementation project(':module_framework:module_orgin')
@@ -73,7 +76,6 @@ dependencies {
     implementation project(':modules:mediator_dagger')
     implementation project(':modules:module_dagger')
 
-    implementation "io.reactivex.rxjava3:rxjava:3.0.0-RC1"
-
+    implementation deps.rxjava.rxjava
 }
 
