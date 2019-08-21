@@ -14,6 +14,8 @@ import android.widget.TextView;
 import com.xxl.example.dagger2.animal.AnimalModule;
 import com.xxl.example.dagger2.animal.DaggerAnimalComponent;
 import com.xxl.example.dagger2.animal.Test;
+import com.xxl.example.design.BankType;
+import com.xxl.example.design.SaveMoneyFactory;
 import com.xxl.example.mediator.dagger.MediatorDagger;
 import com.xxl.example.mediator.web.MediatorWeb;
 
@@ -173,8 +175,12 @@ public class MainActivity extends AppCompatActivity {
         testTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MediatorDagger.startDagger();
+//                MediatorDagger.startDagger();
 //            Log.e("aaa", "onClick: "+MediatorWeb.getUserName());
+                double money = SaveMoneyFactory.getInstance().saveMoney(BankType.ABC)
+                        .saveMoney(100);
+
+                Log.e("aaa", "onClick: "+money);
             }
         });
     }
