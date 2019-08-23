@@ -32,5 +32,13 @@ dependencies {
     implementation deps.androidx.constraintlayout
     api deps.arouter.routerApi
     annotationProcessor deps.arouter.routerCompiler
+    implementation deps.dagger.dagger
+    implementation deps.dagger.android
+    implementation deps.dagger.andoridSupport
+    annotationProcessor deps.dagger.daggerCompiler
+    annotationProcessor deps.dagger.andoridProcessor
+
     implementation project(':modules:mediator_dagger')
+    implementation project(':modules:mediator_dagger')
+    implementation project(path: ':module_framework:module_orgin')
 }

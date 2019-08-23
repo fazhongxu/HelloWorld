@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.xxl.example.dagger">
 
-    <application>
-        <activity android:name=".Dagger2Activity"></activity>
+    <application android:name=".DaggerApplication">
+        <activity android:name=".Dagger2Activity"/>
     </application>
 
 </manifest>

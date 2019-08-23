@@ -19,6 +19,9 @@ import com.xxl.example.design.SaveMoneyFactory;
 import com.xxl.example.mediator.dagger.MediatorDagger;
 import com.xxl.example.mediator.web.MediatorWeb;
 
+import java.util.ArrayList;
+import java.util.Locale;
+
 import javax.inject.Inject;
 
 /**
@@ -177,10 +180,18 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 //                MediatorDagger.startDagger();
 //            Log.e("aaa", "onClick: "+MediatorWeb.getUserName());
-                double money = SaveMoneyFactory.getInstance().saveMoney(BankType.ABC)
-                        .saveMoney(100);
 
-                Log.e("aaa", "onClick: "+money);
+                ArrayList<Integer> bankTypes = new ArrayList<>();
+                bankTypes.add(BankType.ABC);
+                bankTypes.add(BankType.CCB);
+                bankTypes.add(BankType.CMB);
+
+                for (int i = 0; i < bankTypes.size(); i++) {
+                    String str = String.format(Locale.getDefault(),"type == %d,money == %f", bankTypes.get(i),
+                            SaveMoneyFactory.getInstance().saveMoney(bankTypes.get(i))
+                            .saveMoney(100));
+                    Log.e("aaa", str);
+                }
             }
         });
     }
