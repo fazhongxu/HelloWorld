@@ -194,6 +194,28 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+    }
+
+    /**
+     * 两个数相加 提供给C层调用
+     * @param num1 参数1
+     * @param num2 参数2
+     */
+    public void add(int num1,float num2) {
+        float f_number = num1 + num2;
+        Log.e("aaa", "test: "+f_number);
+    }
+
+    /**
+     * 两个数相减 提供给C层调用
+     * @param num1 参数1
+     * @param num2 参数2
+     */
+    public static int sub(int num1,int num2) {
+        int result = num1 - num2;
+        Log.e("aaa", "sub: "+result );
+        return result;
     }
 
     /**
@@ -201,5 +223,7 @@ public class MainActivity extends AppCompatActivity {
      * which is packaged with this application.
      */
     public native String stringFromJNI();
+
+
 
 }
