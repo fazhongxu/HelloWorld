@@ -1,28 +1,22 @@
 package com.xxl.example;
 
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.BounceInterpolator;
-import android.view.animation.LinearInterpolator;
+import android.widget.EditText;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.xxl.example.dagger2.animal.AnimalModule;
 import com.xxl.example.dagger2.animal.DaggerAnimalComponent;
 import com.xxl.example.dagger2.animal.Test;
-import com.xxl.example.design.BankType;
-import com.xxl.example.design.SaveMoneyFactory;
-import com.xxl.example.mediator.dagger.MediatorDagger;
-import com.xxl.example.mediator.web.MediatorWeb;
-
-import java.util.ArrayList;
-import java.util.Locale;
 
 import javax.inject.Inject;
+
+import io.reactivex.subjects.PublishSubject;
 
 /**
  * MainActivity 类似于 咱们的家  需要在家里面等快递
@@ -34,16 +28,22 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("native-lib");
     }
 
+
 //    @Inject
 //    Student mStudent;
 
     @Inject
     Test mTest;
 
+    private SearchPresenter mSearchPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mSearchPresenter = new SearchPresenter();
+
 
 
         //需要快递 则需要快递员送过来
@@ -173,25 +173,29 @@ public class MainActivity extends AppCompatActivity {
                 .inject(this);
 
         TextView testTv = findViewById(R.id.test_tv);
+        EditText searchEt = findViewById(R.id.et_search);
+        searchEt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mSearchPresenter.search(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         testTv.setText(stringFromJNI());
         testTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                MediatorDagger.startDagger();
-//            Log.e("aaa", "onClick: "+MediatorWeb.getUserName());
-
-                ArrayList<Integer> bankTypes = new ArrayList<>();
-                bankTypes.add(BankType.ABC);
-                bankTypes.add(BankType.CCB);
-                bankTypes.add(BankType.CMB);
-
-                for (int i = 0; i < bankTypes.size(); i++) {
-                    String str = String.format(Locale.getDefault(),"type == %d,money == %f", bankTypes.get(i),
-                            SaveMoneyFactory.getInstance().saveMoney(bankTypes.get(i))
-                            .saveMoney(100));
-                    Log.e("aaa", str);
-                }
             }
         });
 
@@ -199,22 +203,24 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 两个数相加 提供给C层调用
+     *
      * @param num1 参数1
      * @param num2 参数2
      */
-    public void add(int num1,float num2) {
+    public void add(int num1, float num2) {
         float f_number = num1 + num2;
-        Log.e("aaa", "test: "+f_number);
+        Log.e("aaa", "test: " + f_number);
     }
 
     /**
      * 两个数相减 提供给C层调用
+     *
      * @param num1 参数1
      * @param num2 参数2
      */
-    public static int sub(int num1,int num2) {
+    public static int sub(int num1, int num2) {
         int result = num1 - num2;
-        Log.e("aaa", "sub: "+result );
+        Log.e("aaa", "sub: " + result);
         return result;
     }
 
@@ -223,7 +229,6 @@ public class MainActivity extends AppCompatActivity {
      * which is packaged with this application.
      */
     public native String stringFromJNI();
-
 
 
 }
