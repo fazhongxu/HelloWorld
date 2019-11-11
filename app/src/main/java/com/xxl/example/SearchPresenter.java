@@ -30,7 +30,7 @@ public class SearchPresenter {
 
     private void initSearch() {
         ConnectableObservable<String> connectableObservable = mKeywordPublishSubject
-                .debounce(300, TimeUnit.MICROSECONDS)
+                .debounce(400, TimeUnit.MILLISECONDS)
                 .distinctUntilChanged()
                 .flatMap(new Function<String, ObservableSource<String>>() {
                     @Override
@@ -69,6 +69,7 @@ public class SearchPresenter {
      */
     public Observable<String> doSearch(@NonNull String keyword) {
         return Observable.just(keyword)
+                .delay(100,TimeUnit.MILLISECONDS)
                 .map(new Function<String, String>() {
                     @Override
                     public String apply(String s) throws Throwable {
