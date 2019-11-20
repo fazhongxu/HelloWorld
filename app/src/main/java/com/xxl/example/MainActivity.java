@@ -1,13 +1,18 @@
 package com.xxl.example;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.xxl.example.dagger2.animal.AnimalModule;
@@ -27,6 +32,11 @@ public class MainActivity extends AppCompatActivity {
     static {
         System.loadLibrary("native-lib");
     }
+
+    /**
+     * 悬浮窗请求码
+     */
+    public static final int FLOATING_WINDOW_REQUEST_COEDE = 0x0011;
 
 
 //    @Inject
@@ -196,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 //                MediatorDagger.startDagger();
+                startFloatingWindow();
             }
         });
 
@@ -231,4 +242,28 @@ public class MainActivity extends AppCompatActivity {
     public native String stringFromJNI();
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == FLOATING_WINDOW_REQUEST_COEDE) {
+            if (Settings.canDrawOverlays(this)) {
+                Toast.makeText(this, "授权成功", Toast.LENGTH_SHORT).show();
+                startFloatingWindow();
+            } else {
+                Toast.makeText(this, "授权失败", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void startFloatingWindow() {
+        if (!Settings.canDrawOverlays(MainActivity.this)) {
+            Toast.makeText(MainActivity.this, "去授权", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent();
+            intent.setAction(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+            intent.setData(Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, FLOATING_WINDOW_REQUEST_COEDE);
+        }else {
+            startService(new Intent(MainActivity.this, FloatingService.class));
+        }
+    }
 }
