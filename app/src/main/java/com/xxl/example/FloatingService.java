@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.IBinder;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,6 +20,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -129,7 +132,7 @@ public class FloatingService extends Service {
     private class FloatingOnTouchListener implements View.OnTouchListener {
         private int x;
         private int y;
-
+        private long currentTimeMillis;
         @SuppressLint("ClickableViewAccessibility")
         @Override
         public boolean onTouch(final View view, MotionEvent event) {
@@ -137,6 +140,8 @@ public class FloatingService extends Service {
                 case MotionEvent.ACTION_DOWN:
                     x = (int) event.getRawX();
                     y = (int) event.getRawY();
+
+                    currentTimeMillis = System.currentTimeMillis();
                     break;
                 case MotionEvent.ACTION_MOVE:
                     int nowX = (int) event.getRawX();
@@ -156,7 +161,12 @@ public class FloatingService extends Service {
                 case MotionEvent.ACTION_UP:
                     int upX = (int) event.getRawX();
                     int upY = (int) event.getRawY();
-
+                    long moveTime = System.currentTimeMillis() - currentTimeMillis;
+                    if (moveTime < 200) {
+                        Toast.makeText(FloatingService.this, "点击", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(FloatingService.this, "拖拽", Toast.LENGTH_SHORT).show();
+                    }
                     int currentUpX = upX;
                     if (upX > mHalfScreenWidth) {
                         upX = mScreenWidth - view.getWidth();
