@@ -1,6 +1,5 @@
 package com.xxl.example.mediator.web;
 
-import androidx.annotation.NonNull;
 
 import com.alibaba.android.arouter.facade.template.IProvider;
 
@@ -15,5 +14,5 @@ public interface IWebProvider extends IProvider {
      * @param uid
      * @return
      */
-    String getUserName(@NonNull String uid);
+    String getUserName(String uid);
 }

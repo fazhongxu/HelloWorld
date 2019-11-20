@@ -5,19 +5,19 @@
             <solid android:color="@color/color_floating_window_background" />
 
             <corners
-                android:bottomLeftRadius="100dp"
-                android:topLeftRadius="100dp" />
+                android:topRightRadius="100dp"
+                android:bottomRightRadius="100dp" />
 
             <stroke
                 android:width="11dp"
                 android:color="@color/colorPrimaryDark" />
         </shape>
     </item>
-    <item android:left="12dp">
+    <item android:right="12dp">
         <shape>
             <corners
-                android:bottomLeftRadius="100dp"
-                android:topLeftRadius="100dp" />
+                android:bottomRightRadius="100dp"
+                android:topRightRadius="100dp" />
             <solid android:color="@color/color_floating_window_background" />
 
         </shape>
