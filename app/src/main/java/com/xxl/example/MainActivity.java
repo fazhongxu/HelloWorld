@@ -25,9 +25,15 @@ import com.xxl.example.floating.FloatingService;
 import com.xxl.example.floating.FloatingWidowOperateListener;
 import com.xxl.example.floating.FloatingWindowServiceConnection;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 /**
  * MainActivity 类似于 咱们的家  需要在家里面等快递
@@ -38,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     static {
         System.loadLibrary("native-lib");
     }
+
+    long time =1;
 
     /**
      * 悬浮窗请求码
@@ -227,7 +235,10 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
+        final List<Integer> list =  new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
+            list.add(i);
+        }
         testTv.setText(stringFromJNI());
         testTv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -236,8 +247,8 @@ public class MainActivity extends AppCompatActivity {
                 startFloatingWindow();
             }
         });
-
     }
+
 
     /**
      * 两个数相加 提供给C层调用

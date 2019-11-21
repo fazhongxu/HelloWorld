@@ -377,7 +377,7 @@ public class FloatingService extends Service {
                             }
                         }
                     });
-                    valueAnimator.setDuration(200);
+                    valueAnimator.setDuration(100);
                     valueAnimator.start();
                     break;
                 default:
@@ -386,10 +386,10 @@ public class FloatingService extends Service {
             return false;
         }
     }
+
     //endregion
 
     //region: 辅助方法
-
 
     /**
      * 是否有悬浮窗权限
