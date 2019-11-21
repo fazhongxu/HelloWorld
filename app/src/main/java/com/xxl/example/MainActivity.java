@@ -1,13 +1,10 @@
 package com.xxl.example;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -23,8 +20,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.xxl.example.dagger2.animal.AnimalModule;
 import com.xxl.example.dagger2.animal.DaggerAnimalComponent;
 import com.xxl.example.dagger2.animal.Test;
+import com.xxl.example.floating.ConversationInfo;
 import com.xxl.example.floating.FloatingService;
+import com.xxl.example.floating.FloatingWidowOperateListener;
 import com.xxl.example.floating.FloatingWindowServiceConnection;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -267,6 +268,8 @@ public class MainActivity extends AppCompatActivity {
      */
     public native String stringFromJNI();
 
+    private static int mCount = 0;
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -292,9 +295,45 @@ public class MainActivity extends AppCompatActivity {
 
             Intent serviceIntent = new Intent(MainActivity.this, FloatingService.class);
             //startService(new Intent(MainActivity.this, FloatingService.class));
-            mFloatingWindowServiceConnection = new FloatingWindowServiceConnection();
+            if (mFloatingWindowServiceConnection == null) {
+                mFloatingWindowServiceConnection = new FloatingWindowServiceConnection();
+            }
+            mFloatingWindowServiceConnection.setFloatingWidowOperateListener(new FloatingWidowOperateListener() {
+                @Override
+                public void onClick() {
+                    FloatingService.FloatingWindowBinder floatingWindowBinder = mFloatingWindowServiceConnection.getFloatingWindowBinder();
+                    if(floatingWindowBinder != null) {
+                        int size = floatingWindowBinder.getConversationInfos().size();
+                        Toast.makeText(MainActivity.this, "click"+size, Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onDrag() {
+                    Toast.makeText(MainActivity.this, "drag", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onDragging() {
+                    Log.e("aaa", "onDragging: ");
+                }
+            });
+            ConversationInfo conversationInfo = new ConversationInfo("张三"+mCount, "http://", 0, "");
+            serviceIntent.putExtra(FloatingService.PARAM_KEY_CONVERSATION_INFO,conversationInfo);
             bindService(serviceIntent, mFloatingWindowServiceConnection, Context.BIND_AUTO_CREATE);
-            //FloatingService.FloatingWindowBinder floatingWindowBinder = new FloatingService.FloatingWindowBinder();
+
+            FloatingService.FloatingWindowBinder floatingWindowBinder = mFloatingWindowServiceConnection.getFloatingWindowBinder();
+
+            Log.e("aaa", "startFloatingWindow: " +floatingWindowBinder);
+            if (floatingWindowBinder == null) {
+                return;
+            }
+            floatingWindowBinder.addConversationInfo(conversationInfo);
+
+            List<ConversationInfo> conversationInfos = mFloatingWindowServiceConnection.getFloatingWindowBinder().
+                    getConversationInfos();
+
+            Log.e("aa", "startFloatingWindow: "+conversationInfos.size());
         }
     }
 

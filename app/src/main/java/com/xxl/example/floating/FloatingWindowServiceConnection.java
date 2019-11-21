@@ -11,12 +11,20 @@ import android.os.IBinder;
  * @date 2019/11/21.
  */
 public class FloatingWindowServiceConnection implements ServiceConnection {
+    //region: 成员变量
 
     private FloatingService.FloatingWindowBinder mFloatingWindowBinder;
+
+    private FloatingWidowOperateListener mFloatingWidowOperateListener;
+
+    //endregion
+
+    //region: 生命周期
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         mFloatingWindowBinder = (FloatingService.FloatingWindowBinder) service;
+        mFloatingWindowBinder.setFloatingWidowOparaterListener(mFloatingWidowOperateListener);
     }
 
     @Override
@@ -24,7 +32,27 @@ public class FloatingWindowServiceConnection implements ServiceConnection {
 
     }
 
+    //endregion
+
+    //region: 提供方法
+
+    /**
+     * 设置悬浮窗操作事件监听
+     *
+     * @param floatingWidowOperateListener
+     */
+    public void setFloatingWidowOperateListener(FloatingWidowOperateListener floatingWidowOperateListener) {
+        mFloatingWidowOperateListener = floatingWidowOperateListener;
+    }
+
+    /**
+     * 获取悬浮窗的Binder
+     *
+     * @return
+     */
     public FloatingService.FloatingWindowBinder getFloatingWindowBinder() {
         return mFloatingWindowBinder;
     }
+
+    //endregion
 }

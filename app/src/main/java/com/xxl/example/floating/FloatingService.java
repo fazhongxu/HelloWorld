@@ -24,13 +24,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.xxl.example.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -78,6 +78,21 @@ public class FloatingService extends Service {
     private View mFloatingWidowView;
 
     /**
+     * 会话信息
+     */
+    private List<ConversationInfo> mConversationInfoList;
+
+    /**
+     * 会话信息key
+     */
+    public static final String PARAM_KEY_CONVERSATION_INFO = "param_key_conversation_info";
+
+    /**
+     * 悬浮窗操作事件监听
+     */
+    private FloatingWidowOperateListener mFloatingWidowOperateListener;
+
+    /**
      * 计时任务，用于监听App是否在后台运行，在后台运行时，隐藏悬浮窗，否则显示
      */
     @SuppressLint("HandlerLeak")
@@ -101,6 +116,7 @@ public class FloatingService extends Service {
     public void onCreate() {
         super.onCreate();
         initFloatingWindow();
+        mConversationInfoList = new ArrayList<>();
         mHandler.sendEmptyMessageDelayed(0, 600);
     }
 
@@ -115,8 +131,12 @@ public class FloatingService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        createFloatingWindow();
-        return new FloatingWindowBinder();
+        ConversationInfo conversationInfo = null;
+        if (intent.getExtras() != null) {
+            conversationInfo = (ConversationInfo) intent.getExtras().getSerializable(PARAM_KEY_CONVERSATION_INFO);
+        }
+        createFloatingWindow(conversationInfo);
+        return new FloatingWindowBinder(conversationInfo);
     }
 
     @Override
@@ -132,8 +152,35 @@ public class FloatingService extends Service {
      * 悬浮窗Binder通讯
      */
     public class FloatingWindowBinder extends Binder {
+
+        public FloatingWindowBinder(ConversationInfo conversationInfo) {
+            if (conversationInfo != null) {
+                addConversationInfo(conversationInfo);
+            }
+        }
+
         public void changeFloatingIcon(Drawable targetDrawable) {
             changeFloatingBackground(targetDrawable);
+        }
+
+        public synchronized void addConversationInfo(ConversationInfo conversationInfo) {
+            if (!mConversationInfoList.contains(conversationInfo)) {
+                mConversationInfoList.add(conversationInfo);
+            }
+        }
+
+        public synchronized void removeConversationInfo(ConversationInfo conversationInfo) {
+            if (mConversationInfoList.contains(conversationInfo)) {
+                mConversationInfoList.remove(conversationInfo);
+            }
+        }
+
+        public List<ConversationInfo> getConversationInfos() {
+            return mConversationInfoList;
+        }
+
+        public void setFloatingWidowOparaterListener(FloatingWidowOperateListener floatingWidowOperateListener) {
+            mFloatingWidowOperateListener = floatingWidowOperateListener;
         }
     }
 
@@ -177,13 +224,16 @@ public class FloatingService extends Service {
     /**
      * 创建悬浮窗
      */
-    private void createFloatingWindow() {
+    private void createFloatingWindow(ConversationInfo conversationInfo) {
         if (canDrawOverlays()) {
             LayoutInflater layoutInflater = LayoutInflater.from(this);
             if (mFloatingWidowView == null) {
                 mFloatingWidowView = layoutInflater.inflate(R.layout.ui_floating_window, null);
             } else {
                 mWindowManager.removeView(mFloatingWidowView);
+            }
+            if (conversationInfo != null) {
+                Log.e("aa", "createFloatingWindow: " + conversationInfo.getNickname());
             }
             mFloatingWidowView.setVisibility(View.VISIBLE);
             mFloatingWidowView.setOnTouchListener(new FloatingOnTouchListener());
@@ -267,6 +317,12 @@ public class FloatingService extends Service {
                     if (mLayoutParams.x > 0 || mLayoutParams.x < mScreenWidth) {
                         view.setBackground(mBackgroundRadiusDrawable);
                     }
+
+                    long movingTime = System.currentTimeMillis() - currentTimeMillis;
+                    boolean isDrag = movingTime > 200 && (xMoveDistance > 20 || yMoveDistance > 20);
+                    if (isDrag) {
+                        mFloatingWidowOperateListener.onDragging();
+                    }
                     break;
                 case MotionEvent.ACTION_UP:
                     int upX = (int) event.getRawX();
@@ -276,9 +332,13 @@ public class FloatingService extends Service {
                     long moveTime = System.currentTimeMillis() - currentTimeMillis;
                     boolean isClick = moveTime < 200 && (xMoveDistance < 20 || yMoveDistance < 20);
                     if (isClick) {
-                        Toast.makeText(FloatingService.this, "点击", Toast.LENGTH_SHORT).show();
+                        if (mFloatingWidowOperateListener != null) {
+                            mFloatingWidowOperateListener.onClick();
+                        }
                     } else {
-                        Toast.makeText(FloatingService.this, "拖拽", Toast.LENGTH_SHORT).show();
+                        if (mFloatingWidowOperateListener != null) {
+                            mFloatingWidowOperateListener.onDrag();
+                        }
                     }
                     int currentUpX = upX;
                     if (mLayoutParams.x + viewWidth / 2 > mHalfScreenWidth) {
