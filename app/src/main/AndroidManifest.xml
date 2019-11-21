@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <service android:name=".FloatingService"/>
+        <service android:name=".floating.FloatingService"/>
 
         <activity android:name=".MainActivity">
             <intent-filter>

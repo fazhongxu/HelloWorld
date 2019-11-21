@@ -18,10 +18,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.xxl.example.dagger2.animal.AnimalModule;
 import com.xxl.example.dagger2.animal.DaggerAnimalComponent;
 import com.xxl.example.dagger2.animal.Test;
+import com.xxl.example.floating.FloatingService;
 
 import javax.inject.Inject;
-
-import io.reactivex.subjects.PublishSubject;
 
 /**
  * MainActivity 类似于 咱们的家  需要在家里面等快递
