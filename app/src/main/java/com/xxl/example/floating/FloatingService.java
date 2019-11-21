@@ -10,11 +10,13 @@ import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -113,14 +115,28 @@ public class FloatingService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        createFloatingWindow();
+        return new FloatingWindowBinder();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        createFloatingWindow();
+        //createFloatingWindow();
         return super.onStartCommand(intent, flags, startId);
     }
+    //endregion
+
+    //region: FloatingWindowBinder
+
+    /**
+     * 悬浮窗Binder通讯
+     */
+    public class FloatingWindowBinder extends Binder {
+        public void changeFloatingIcon(Drawable targetDrawable) {
+            changeFloatingBackground(targetDrawable);
+        }
+    }
+
     //endregion
 
     //region: 悬浮窗初始化
@@ -197,6 +213,18 @@ public class FloatingService extends Service {
         }
         mFloatingWidowView.setVisibility(View.VISIBLE);
     }
+
+    /**
+     * 改变悬浮窗的背景
+     *
+     * @param targetDrawable
+     */
+    private void changeFloatingBackground(Drawable targetDrawable) {
+        if (mFloatingWidowView == null || targetDrawable == null) {
+            return;
+        }
+        mFloatingWidowView.setBackground(targetDrawable);
+    }
     //endregion
 
     //region: 事件监听
@@ -243,6 +271,8 @@ public class FloatingService extends Service {
                 case MotionEvent.ACTION_UP:
                     int upX = (int) event.getRawX();
                     int upY = (int) event.getRawY();
+                    int viewWidth = view.getWidth();
+
                     long moveTime = System.currentTimeMillis() - currentTimeMillis;
                     boolean isClick = moveTime < 200 && (xMoveDistance < 20 || yMoveDistance < 20);
                     if (isClick) {
@@ -251,7 +281,7 @@ public class FloatingService extends Service {
                         Toast.makeText(FloatingService.this, "拖拽", Toast.LENGTH_SHORT).show();
                     }
                     int currentUpX = upX;
-                    if (upX > mHalfScreenWidth) {
+                    if (mLayoutParams.x + viewWidth / 2 > mHalfScreenWidth) {
                         upX = mScreenWidth - view.getWidth();
                     } else {
                         upX = 0;
@@ -261,7 +291,6 @@ public class FloatingService extends Service {
 
                     //动画设置
                     ValueAnimator valueAnimator;
-                    int viewWidth = view.getWidth();
                     if (upX <= 0) {
                         valueAnimator = ValueAnimator.ofFloat(currentUpX - viewWidth, 0);
                     } else {

@@ -16,11 +16,28 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <View
+        android:layout_width="1dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:background="@color/colorPrimary"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_height="match_parent"/>
+
     <EditText
         android:id="@+id/et_search"
         android:visibility="gone"
         android:layout_width="match_parent"
         app:layout_constraintTop_toBottomOf="@+id/test_tv"
         android:layout_height="56dp" />
+
+    <TextView
+        android:id="@+id/tv_change_icon"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="20dp"
+        android:text="change"
+        app:layout_constraintTop_toBottomOf="@+id/test_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

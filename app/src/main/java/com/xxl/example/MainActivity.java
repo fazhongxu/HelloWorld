@@ -1,8 +1,13 @@
 package com.xxl.example;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,6 +24,7 @@ import com.xxl.example.dagger2.animal.AnimalModule;
 import com.xxl.example.dagger2.animal.DaggerAnimalComponent;
 import com.xxl.example.dagger2.animal.Test;
 import com.xxl.example.floating.FloatingService;
+import com.xxl.example.floating.FloatingWindowServiceConnection;
 
 import javax.inject.Inject;
 
@@ -45,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     Test mTest;
 
     private SearchPresenter mSearchPresenter;
+    private FloatingWindowServiceConnection mFloatingWindowServiceConnection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mSearchPresenter = new SearchPresenter();
-
 
 
         //需要快递 则需要快递员送过来
@@ -182,7 +188,28 @@ public class MainActivity extends AppCompatActivity {
                 .inject(this);
 
         TextView testTv = findViewById(R.id.test_tv);
+        TextView changeIconTv = findViewById(R.id.tv_change_icon);
         EditText searchEt = findViewById(R.id.et_search);
+        final Drawable drawable;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            drawable = getResources().getDrawable(R.drawable.layer_list_floating_window_right_half_radius, getTheme());
+        } else {
+            drawable = getResources().getDrawable(R.drawable.layer_list_floating_window_right_half_radius);
+        }
+        changeIconTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mFloatingWindowServiceConnection == null) {
+                    return;
+                }
+                FloatingService.FloatingWindowBinder floatingWindowBinder = mFloatingWindowServiceConnection.getFloatingWindowBinder();
+                if (floatingWindowBinder == null) {
+                    return;
+                }
+                floatingWindowBinder.changeFloatingIcon(drawable);
+
+            }
+        });
         searchEt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -261,8 +288,19 @@ public class MainActivity extends AppCompatActivity {
             intent.setAction(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
             intent.setData(Uri.parse("package:" + getPackageName()));
             startActivityForResult(intent, FLOATING_WINDOW_REQUEST_COEDE);
-        }else {
-            startService(new Intent(MainActivity.this, FloatingService.class));
+        } else {
+
+            Intent serviceIntent = new Intent(MainActivity.this, FloatingService.class);
+            //startService(new Intent(MainActivity.this, FloatingService.class));
+            mFloatingWindowServiceConnection = new FloatingWindowServiceConnection();
+            bindService(serviceIntent, mFloatingWindowServiceConnection, Context.BIND_AUTO_CREATE);
+            //FloatingService.FloatingWindowBinder floatingWindowBinder = new FloatingService.FloatingWindowBinder();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(mFloatingWindowServiceConnection);
     }
 }
