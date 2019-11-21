@@ -208,6 +208,8 @@ public class FloatingService extends Service {
         private int x;
         private int y;
         private long currentTimeMillis;
+        private long xMoveDistance;
+        private long yMoveDistance;
 
         @SuppressLint("ClickableViewAccessibility")
         @Override
@@ -216,6 +218,8 @@ public class FloatingService extends Service {
                 case MotionEvent.ACTION_DOWN:
                     x = (int) event.getRawX();
                     y = (int) event.getRawY();
+                    xMoveDistance = 0;
+                    yMoveDistance = 0;
 
                     currentTimeMillis = System.currentTimeMillis();
                     break;
@@ -224,6 +228,8 @@ public class FloatingService extends Service {
                     int nowY = (int) event.getRawY();
                     int movedX = nowX - x;
                     int movedY = nowY - y;
+                    xMoveDistance += Math.abs(movedX);
+                    yMoveDistance += Math.abs(movedY);
                     x = nowX;
                     y = nowY;
                     mLayoutParams.x = mLayoutParams.x + movedX;
@@ -238,7 +244,8 @@ public class FloatingService extends Service {
                     int upX = (int) event.getRawX();
                     int upY = (int) event.getRawY();
                     long moveTime = System.currentTimeMillis() - currentTimeMillis;
-                    if (moveTime < 200) {
+                    boolean isClick = moveTime < 200 && (xMoveDistance < 20 || yMoveDistance < 20);
+                    if (isClick) {
                         Toast.makeText(FloatingService.this, "点击", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(FloatingService.this, "拖拽", Toast.LENGTH_SHORT).show();
