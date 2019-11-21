@@ -182,6 +182,14 @@ public class FloatingService extends Service {
         public void setFloatingWidowOparaterListener(FloatingWidowOperateListener floatingWidowOperateListener) {
             mFloatingWidowOperateListener = floatingWidowOperateListener;
         }
+
+        public void floatingViewShow() {
+            showFloatingView();
+        }
+
+        public void floatingViewDismiss() {
+            closeFloatingView();
+        }
     }
 
     //endregion

@@ -11,6 +11,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +22,7 @@ import com.xxl.example.dagger2.animal.AnimalModule;
 import com.xxl.example.dagger2.animal.DaggerAnimalComponent;
 import com.xxl.example.dagger2.animal.Test;
 import com.xxl.example.floating.ConversationInfo;
+import com.xxl.example.floating.FloatingPopupWindow;
 import com.xxl.example.floating.FloatingService;
 import com.xxl.example.floating.FloatingWidowOperateListener;
 import com.xxl.example.floating.FloatingWindowServiceConnection;
@@ -45,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("native-lib");
     }
 
-    long time =1;
+    long time = 1;
 
     /**
      * 悬浮窗请求码
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
     private SearchPresenter mSearchPresenter;
     private FloatingWindowServiceConnection mFloatingWindowServiceConnection;
+    private FloatingPopupWindow mFloatingPopupWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -235,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        final List<Integer> list =  new ArrayList<>();
+        final List<Integer> list = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
             list.add(i);
         }
@@ -309,13 +312,26 @@ public class MainActivity extends AppCompatActivity {
             if (mFloatingWindowServiceConnection == null) {
                 mFloatingWindowServiceConnection = new FloatingWindowServiceConnection();
             }
+            if (mFloatingPopupWindow == null) {
+                mFloatingPopupWindow = new FloatingPopupWindow(this);
+            }
+            mFloatingPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                @Override
+                public void onDismiss() {
+                    mFloatingWindowServiceConnection.getFloatingWindowBinder()
+                            .floatingViewShow();
+                }
+            });
             mFloatingWindowServiceConnection.setFloatingWidowOperateListener(new FloatingWidowOperateListener() {
                 @Override
                 public void onClick() {
                     FloatingService.FloatingWindowBinder floatingWindowBinder = mFloatingWindowServiceConnection.getFloatingWindowBinder();
-                    if(floatingWindowBinder != null) {
+                    if (floatingWindowBinder != null) {
                         int size = floatingWindowBinder.getConversationInfos().size();
-                        Toast.makeText(MainActivity.this, "click"+size, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "click" + size, Toast.LENGTH_SHORT).show();
+                        mFloatingPopupWindow.show();
+                        mFloatingWindowServiceConnection.getFloatingWindowBinder()
+                                .floatingViewDismiss();
                     }
                 }
 
@@ -329,13 +345,13 @@ public class MainActivity extends AppCompatActivity {
                     Log.e("aaa", "onDragging: ");
                 }
             });
-            ConversationInfo conversationInfo = new ConversationInfo("张三"+mCount, "http://", 0, "");
-            serviceIntent.putExtra(FloatingService.PARAM_KEY_CONVERSATION_INFO,conversationInfo);
+            ConversationInfo conversationInfo = new ConversationInfo("张三" + mCount, "http://", 0, "");
+            serviceIntent.putExtra(FloatingService.PARAM_KEY_CONVERSATION_INFO, conversationInfo);
             bindService(serviceIntent, mFloatingWindowServiceConnection, Context.BIND_AUTO_CREATE);
 
             FloatingService.FloatingWindowBinder floatingWindowBinder = mFloatingWindowServiceConnection.getFloatingWindowBinder();
 
-            Log.e("aaa", "startFloatingWindow: " +floatingWindowBinder);
+            Log.e("aaa", "startFloatingWindow: " + floatingWindowBinder);
             if (floatingWindowBinder == null) {
                 return;
             }
@@ -344,7 +360,7 @@ public class MainActivity extends AppCompatActivity {
             List<ConversationInfo> conversationInfos = mFloatingWindowServiceConnection.getFloatingWindowBinder().
                     getConversationInfos();
 
-            Log.e("aa", "startFloatingWindow: "+conversationInfos.size());
+            Log.e("aa", "startFloatingWindow: " + conversationInfos.size());
         }
     }
 
