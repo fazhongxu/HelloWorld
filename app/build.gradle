@@ -77,5 +77,6 @@ dependencies {
     implementation project(':modules:module_dagger')
 
     implementation deps.rxjava.rxjava
+    implementation  deps.material.material
 }
 

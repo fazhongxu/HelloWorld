@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.xxl.example.collspanding.CollapsingActivity;
 import com.xxl.example.dagger2.animal.AnimalModule;
 import com.xxl.example.dagger2.animal.DaggerAnimalComponent;
 import com.xxl.example.dagger2.animal.Test;
@@ -198,6 +199,8 @@ public class MainActivity extends AppCompatActivity {
                 .animalModule(new AnimalModule())
                 .build()
                 .inject(this);
+
+        startActivity(new Intent(this, CollapsingActivity.class));
 
         TextView testTv = findViewById(R.id.test_tv);
         TextView changeIconTv = findViewById(R.id.tv_change_icon);

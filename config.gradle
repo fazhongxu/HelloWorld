@@ -8,6 +8,7 @@ def versions = [:]
     //view
     versions.appcompat = "1.0.0"
     versions.constraintlayout = "1.1.3"
+    versions.material = "1.0.0"
 
     //dagger
     versions.dagger = "2.17"
@@ -24,6 +25,11 @@ def androidx = [:]
     androidx.appcompat = "androidx.appcompat:appcompat:$versions.appcompat"
     androidx.constraintlayout = "androidx.constraintlayout:constraintlayout:$versions.constraintlayout"
     deps.androidx = androidx
+
+//material
+def material = [:]
+    material.material = "com.google.android.material:material:$versions.material"
+    deps.material = material
 
 //arouter
 def arouter = [:]
