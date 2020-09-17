@@ -5,7 +5,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.xxl.helloworld.dagger2.DaggerStudentComponent;
+import com.example.xxl.helloworld.dagger2.AnimalModule;
+import com.example.xxl.helloworld.dagger2.DaggerAppComponent;
+import com.example.xxl.helloworld.dagger2.Dog;
+import com.example.xxl.helloworld.dagger2.ForCat;
+import com.example.xxl.helloworld.dagger2.ForDog;
+import com.example.xxl.helloworld.dagger2.Skill;
 import com.example.xxl.helloworld.dagger2.Student;
 import com.example.xxl.helloworld.dagger2.StudentModule;
 
@@ -17,6 +22,10 @@ import javax.inject.Inject;
 public class MainActivity extends AppCompatActivity  {
     @Inject
     Student mStudent;
+
+    @ForDog
+    @Inject
+    Skill skill;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,13 +146,18 @@ public class MainActivity extends AppCompatActivity  {
          */
 
 
-        DaggerStudentComponent
+        /*DaggerStudentComponent
                 .builder()
                 .studentModule(new StudentModule(this))
                 .build()
+                .inject(this);*/
+        DaggerAppComponent.builder()
+                .studentModule(new StudentModule(this))
+                .animalModule(new AnimalModule(this))
+                .build()
                 .inject(this);
 
-
+        skill.eat();
         findViewById(R.id.test_tv)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
