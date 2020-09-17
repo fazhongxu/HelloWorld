@@ -33,3 +33,15 @@
 这个属于user模块，但是现在领唱模块需要用，你也可以copy user模块的方法出来调用，
 完全OK，但是最好不要那样做，正确的做法是user模块提供接口，并实现，然后在user模块
 对应的中间件里面获取ARouter的provider，暴露处对应的方法，别的模块使用）
+
+    packagename
+	data
+		local
+		remote
+		model
+		repository
+	di
+		builder
+		module
+	ui 	
+		search
