@@ -1,42 +1,18 @@
 package com.xxl.example;
 
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.xxl.example.collspanding.CollapsingActivity;
 import com.xxl.example.dagger2.animal.AnimalModule;
 import com.xxl.example.dagger2.animal.DaggerAnimalComponent;
 import com.xxl.example.dagger2.animal.Test;
-import com.xxl.example.floating.ConversationInfo;
 import com.xxl.example.floating.FloatingPopupWindow;
-import com.xxl.example.floating.FloatingService;
-import com.xxl.example.floating.FloatingWidowOperateListener;
 import com.xxl.example.floating.FloatingWindowServiceConnection;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import javax.inject.Inject;
-
-import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 /**
  * MainActivity 类似于 咱们的家  需要在家里面等快递
@@ -48,30 +24,16 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("native-lib");
     }
 
-    long time = 1;
-
-    /**
-     * 悬浮窗请求码
-     */
-    public static final int FLOATING_WINDOW_REQUEST_COEDE = 0x0011;
-
-
 //    @Inject
 //    Student mStudent;
 
     @Inject
     Test mTest;
 
-    private SearchPresenter mSearchPresenter;
-    private FloatingWindowServiceConnection mFloatingWindowServiceConnection;
-    private FloatingPopupWindow mFloatingPopupWindow;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mSearchPresenter = new SearchPresenter();
 
 
         //需要快递 则需要快递员送过来
@@ -200,59 +162,8 @@ public class MainActivity extends AppCompatActivity {
                 .build()
                 .inject(this);
 
-        startActivity(new Intent(this, CollapsingActivity.class));
-
         TextView testTv = findViewById(R.id.test_tv);
-        TextView changeIconTv = findViewById(R.id.tv_change_icon);
-        EditText searchEt = findViewById(R.id.et_search);
-        final Drawable drawable;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            drawable = getResources().getDrawable(R.drawable.layer_list_floating_window_right_half_radius, getTheme());
-        } else {
-            drawable = getResources().getDrawable(R.drawable.layer_list_floating_window_right_half_radius);
-        }
-        changeIconTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mFloatingWindowServiceConnection == null) {
-                    return;
-                }
-                FloatingService.FloatingWindowBinder floatingWindowBinder = mFloatingWindowServiceConnection.getFloatingWindowBinder();
-                if (floatingWindowBinder == null) {
-                    return;
-                }
-                floatingWindowBinder.changeFloatingIcon(drawable);
-
-            }
-        });
-        searchEt.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mSearchPresenter.search(s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        final List<Integer> list = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            list.add(i);
-        }
         testTv.setText(stringFromJNI());
-        testTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                MediatorDagger.startDagger();
-                startFloatingWindow();
-            }
-        });
     }
 
 
@@ -285,91 +196,5 @@ public class MainActivity extends AppCompatActivity {
      */
     public native String stringFromJNI();
 
-    private static int mCount = 0;
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == FLOATING_WINDOW_REQUEST_COEDE) {
-            if (Settings.canDrawOverlays(this)) {
-                Toast.makeText(this, "授权成功", Toast.LENGTH_SHORT).show();
-                startFloatingWindow();
-            } else {
-                Toast.makeText(this, "授权失败", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    private void startFloatingWindow() {
-        if (!Settings.canDrawOverlays(MainActivity.this)) {
-            Toast.makeText(MainActivity.this, "去授权", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent();
-            intent.setAction(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-            intent.setData(Uri.parse("package:" + getPackageName()));
-            startActivityForResult(intent, FLOATING_WINDOW_REQUEST_COEDE);
-        } else {
-
-            Intent serviceIntent = new Intent(MainActivity.this, FloatingService.class);
-            //startService(new Intent(MainActivity.this, FloatingService.class));
-            if (mFloatingWindowServiceConnection == null) {
-                mFloatingWindowServiceConnection = new FloatingWindowServiceConnection();
-            }
-            if (mFloatingPopupWindow == null) {
-                mFloatingPopupWindow = new FloatingPopupWindow(this);
-            }
-            mFloatingPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-                @Override
-                public void onDismiss() {
-                    mFloatingWindowServiceConnection.getFloatingWindowBinder()
-                            .floatingViewShow();
-                }
-            });
-            mFloatingWindowServiceConnection.setFloatingWidowOperateListener(new FloatingWidowOperateListener() {
-                @Override
-                public void onClick() {
-                    FloatingService.FloatingWindowBinder floatingWindowBinder = mFloatingWindowServiceConnection.getFloatingWindowBinder();
-                    if (floatingWindowBinder != null) {
-                        int size = floatingWindowBinder.getConversationInfos().size();
-                        Toast.makeText(MainActivity.this, "click" + size, Toast.LENGTH_SHORT).show();
-                        mFloatingPopupWindow.show();
-                        mFloatingWindowServiceConnection.getFloatingWindowBinder()
-                                .floatingViewDismiss();
-                    }
-                }
-
-                @Override
-                public void onDrag() {
-                    Toast.makeText(MainActivity.this, "drag", Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onDragging() {
-                    Log.e("aaa", "onDragging: ");
-                }
-            });
-            ConversationInfo conversationInfo = new ConversationInfo("张三" + mCount, "http://", 0, "");
-            serviceIntent.putExtra(FloatingService.PARAM_KEY_CONVERSATION_INFO, conversationInfo);
-            bindService(serviceIntent, mFloatingWindowServiceConnection, Context.BIND_AUTO_CREATE);
-
-            FloatingService.FloatingWindowBinder floatingWindowBinder = mFloatingWindowServiceConnection.getFloatingWindowBinder();
-
-            Log.e("aaa", "startFloatingWindow: " + floatingWindowBinder);
-            if (floatingWindowBinder == null) {
-                return;
-            }
-            floatingWindowBinder.addConversationInfo(conversationInfo);
-
-            List<ConversationInfo> conversationInfos = mFloatingWindowServiceConnection.getFloatingWindowBinder().
-                    getConversationInfos();
-
-            Log.e("aa", "startFloatingWindow: " + conversationInfos.size());
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unbindService(mFloatingWindowServiceConnection);
-    }
 }
