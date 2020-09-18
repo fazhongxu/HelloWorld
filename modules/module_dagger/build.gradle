@@ -46,4 +46,6 @@ dependencies {
     implementation project(':modules:mediator_dagger')
     implementation project(':modules:mediator_dagger')
     implementation project(path: ':module_framework:module_orgin')
+
+    implementation deps.rxjava.rxjava
 }

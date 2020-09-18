@@ -3,7 +3,7 @@
     package="com.xxl.example.dagger">
 
     <application>
-        <activity android:name=".Dagger2Activity"/>
+        <activity android:name=".ui.Dagger2Activity"/>
     </application>
 
 </manifest>
