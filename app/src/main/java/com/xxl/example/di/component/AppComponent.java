@@ -1,8 +1,10 @@
-package com.xxl.example.di;
+package com.xxl.example.di.component;
 
 import android.app.Application;
 
 import com.xxl.example.App;
+import com.xxl.example.di.module.AppModule;
+import com.xxl.example.di.builder.ActivityBuilderModule;
 
 import dagger.BindsInstance;
 import dagger.Component;

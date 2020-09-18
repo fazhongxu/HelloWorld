@@ -1,4 +1,4 @@
-package com.xxl.example.di;
+package com.xxl.example.di.module;
 
 import dagger.Module;
 

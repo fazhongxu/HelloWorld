@@ -1,4 +1,4 @@
-package com.xxl.example.di;
+package com.xxl.example.di.builder;
 
 import com.xxl.example.MainActivity;
 
