@@ -1,7 +1,5 @@
 package com.xxl.example.dagger2.animal;
 
-import com.xxl.example.MainActivity;
-
 import dagger.Component;
 
 /**
@@ -10,5 +8,5 @@ import dagger.Component;
  */
 @Component(modules = AnimalModule.class)
 public interface AnimalComponent {
-    void inject(MainActivity mainActivity);
+    //void inject(MainActivity mainActivity);
 }

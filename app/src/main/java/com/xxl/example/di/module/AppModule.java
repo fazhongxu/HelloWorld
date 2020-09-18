@@ -1,6 +1,13 @@
 package com.xxl.example.di.module;
 
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+
+import javax.inject.Singleton;
+
 import dagger.Module;
+import dagger.Provides;
 
 /**
  * @author xxl.
@@ -9,4 +16,9 @@ import dagger.Module;
 @Module
 public class AppModule {
 
+    @Singleton
+    @Provides
+    Application provideApplication(@NonNull final Application application) {
+        return application;
+    }
 }

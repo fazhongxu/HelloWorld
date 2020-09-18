@@ -1,6 +1,6 @@
 package com.xxl.example;
 
-import com.xxl.example.di.component.DaggerAppComponent;
+import com.xxl.example.di.component .DaggerAppComponent;
 import com.xxl.example.origin.BaseApp;
 
 import dagger.Component;

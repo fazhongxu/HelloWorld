@@ -8,6 +8,8 @@ import androidx.annotation.Nullable;
 
 import com.xxl.example.origin.ui.BaseActivity;
 
+import javax.inject.Inject;
+
 /**
  * MainActivity 类似于 咱们的家  需要在家里面等快递
  */
@@ -20,6 +22,9 @@ public class MainActivity extends BaseActivity {
 
 //    @Inject
 //    Student mStudent;
+
+    @Inject
+    User mUser;
 
 
 //    @Override
@@ -170,7 +175,7 @@ public class MainActivity extends BaseActivity {
     @Override
     public void setupLayout() {
         TextView testTv = findViewById(R.id.test_tv);
-        testTv.setText(stringFromJNI());
+        testTv.setText(mUser.toString());
     }
 
     /**

@@ -9,6 +9,10 @@ public class User {
     private String nick;
     private String password;
 
+    public User() {
+    }
+
+
     public String getNick() {
         return nick;
     }
@@ -24,4 +28,5 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }

@@ -1,6 +1,11 @@
 package com.xxl.example;
 
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+
 import dagger.Module;
+import dagger.Provides;
 
 /**
  * @author xxl.
@@ -8,5 +13,11 @@ import dagger.Module;
  */
 @Module
 public class MainActivityProvider {
+
+    @Provides
+    User provideUser() {
+        return new User();
+    }
+
 
 }

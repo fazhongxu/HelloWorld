@@ -1,6 +1,7 @@
 package com.xxl.example.di.builder;
 
 import com.xxl.example.MainActivity;
+import com.xxl.example.MainActivityProvider;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -12,6 +13,6 @@ import dagger.android.ContributesAndroidInjector;
 @Module
 public abstract class ActivityBuilderModule {
 
-    @ContributesAndroidInjector
+    @ContributesAndroidInjector(modules = MainActivityProvider.class)
     abstract MainActivity bindMainActivity();
 }
