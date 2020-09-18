@@ -17,8 +17,22 @@ def versions = [:]
     //rxjava
     versions.rxjava = "3.0.0-RC1"
 
+    //okhttp
+    versions.okhttp = "3.0.0"
+
+    //retrofit
+    versions.retrofit = "2.9.0"
+
+    //kotlin
+    versions.kotlin = "1.3.0"
+
     //rxpermission
     versions.rxPermission = "0.10.2"
+
+    versions.android_gradle_plugin = "3.2.0"
+
+//
+deps.android_gradle_plugin = "com.android.tools.build:gradle:$versions.android_gradle_plugin"
 
 //androidx
 def androidx = [:]
@@ -50,6 +64,18 @@ def dagger = [:]
 def rxjava = [:]
     rxjava.rxjava = "io.reactivex.rxjava3:rxjava:$versions.rxjava"
     deps.rxjava = rxjava
+
+//okhttp
+    deps.okhttp = "com.squareup.okhttp3:okhttp:$versions.okhttp"
+
+//retrofit
+def retrofit = [:]
+    retrofit.retrofit ="com.squareup.retrofit2:retrofit:$versions.retrofit"
+    deps.retrofit = retrofit
+
+//kotlin
+deps.kotlin_plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
+
 
 //other
 

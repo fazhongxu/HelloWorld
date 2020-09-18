@@ -6,7 +6,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import dagger.android.AndroidInjection;
-import dagger.android.support.AndroidSupportInjection;
 
 /**
  * @author xxl.

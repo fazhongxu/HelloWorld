@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
 
@@ -29,6 +30,7 @@ android {
                 cppFlags ""
             }
         }
+
     }
     buildTypes {
 
@@ -51,7 +53,15 @@ android {
             path "CMakeLists.txt"
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+
 }
+
 
 static def gitVersionCode() {
     def cmd = 'git rev-list HEAD --count'
@@ -78,6 +88,8 @@ dependencies {
     implementation project(':modules:module_dagger')
 
     implementation deps.rxjava.rxjava
-    implementation  deps.material.material
+    implementation deps.material.material
+
+
 }
 

@@ -24,6 +24,10 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -38,5 +42,8 @@ dependencies {
     api deps.dagger.andoridSupport
 
     annotationProcessor deps.dagger.andoridProcessor
+
+    api deps.okhttp
+    api deps.retrofit.retrofit
 
 }
