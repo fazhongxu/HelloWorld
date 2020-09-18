@@ -1,8 +1,11 @@
 package com.xxl.example;
 
-import com.xxl.example.dagger2.AppModule;
-import com.xxl.example.dagger2.DaggerAppComponnent;
+import com.xxl.example.di.DaggerAppComponent;
 import com.xxl.example.origin.BaseApp;
+
+import dagger.Component;
+import dagger.android.AndroidInjector;
+import dagger.android.DaggerApplication;
 
 /**
  * @author xxl.
@@ -13,11 +16,15 @@ public class App extends BaseApp {
     @Override
     public void onCreate() {
         super.onCreate();
-        DaggerAppComponnent.builder()
-                .appModule(new AppModule(this))
-                .build()
-                .inject(this);
+    }
 
+    /**
+     * Implementations should return an {@link AndroidInjector} for the concrete {@link
+     * DaggerApplication}. Typically, that injector is a {@link Component}.
+     */
+    @Override
+    protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
+        return DaggerAppComponent.builder().application(this).build();
     }
 
 }

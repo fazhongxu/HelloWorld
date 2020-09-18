@@ -1,15 +1,16 @@
 package com.xxl.example.origin;
 
-import android.app.Application;
-
 import com.alibaba.android.arouter.launcher.ARouter;
+
+import dagger.android.DaggerApplication;
 
 /**
  * Created by xxl on 19/5/22.
  * <p>
  * Description
  **/
-public class BaseApp extends Application {
+public abstract class BaseApp extends DaggerApplication {
+
     @Override
     public void onCreate() {
         super.onCreate();

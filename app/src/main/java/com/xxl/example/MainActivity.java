@@ -4,19 +4,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.Nullable;
 
-import com.xxl.example.dagger2.animal.AnimalModule;
-import com.xxl.example.dagger2.animal.DaggerAnimalComponent;
-import com.xxl.example.dagger2.animal.Test;
-
-import javax.inject.Inject;
+import com.xxl.example.origin.ui.BaseActivity;
 
 /**
  * MainActivity 类似于 咱们的家  需要在家里面等快递
  */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     // Used to load the 'native-lib' library on application startup.
     static {
         System.loadLibrary("native-lib");
@@ -25,13 +21,11 @@ public class MainActivity extends AppCompatActivity {
 //    @Inject
 //    Student mStudent;
 
-    @Inject
-    Test mTest;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_main);
 
 
         //需要快递 则需要快递员送过来
@@ -155,13 +149,38 @@ public class MainActivity extends AppCompatActivity {
 //                .inject(this);
 
 
-        DaggerAnimalComponent.builder()
-                .animalModule(new AnimalModule())
-                .build()
-                .inject(this);
 
+//        TextView testTv = findViewById(R.id.test_tv);
+//        testTv.setText(stringFromJNI());
+//    }
+
+    /**
+     * 获取布局资源ID
+     *
+     * @return
+     */
+    @Override
+    public int getLayoutResId() {
+        return R.layout.activity_main;
+    }
+
+    /**
+     * 设置视图
+     */
+    @Override
+    public void setupLayout() {
         TextView testTv = findViewById(R.id.test_tv);
         testTv.setText(stringFromJNI());
+    }
+
+    /**
+     * 设置数据
+     *
+     * @param savedInstanceState
+     */
+    @Override
+    public void setupData(@Nullable Bundle savedInstanceState) {
+
     }
 
 
