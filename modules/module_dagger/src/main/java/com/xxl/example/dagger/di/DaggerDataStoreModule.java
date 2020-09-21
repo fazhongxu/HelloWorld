@@ -8,6 +8,7 @@ import com.xxl.example.dagger.data.remote.DaggerRemoteDataSource;
 import com.xxl.example.dagger.data.remote.DaggerRemoteDataSourceImpl;
 import com.xxl.example.dagger.data.repository.DaggerRepository;
 import com.xxl.example.dagger.data.repository.DaggerRepositoryImpl;
+import com.xxl.example.origin.anotation.ForRetorfit;
 
 import javax.inject.Singleton;
 
@@ -30,7 +31,7 @@ public class DaggerDataStoreModule {
 
     @Singleton
     @Provides
-    DaggerRemoteDataSource provideDaggerRemoteDataSource(Retrofit retrofit) {
+    DaggerRemoteDataSource provideDaggerRemoteDataSource(@ForRetorfit Retrofit retrofit) {
         return new DaggerRemoteDataSourceImpl(retrofit);
     }
 

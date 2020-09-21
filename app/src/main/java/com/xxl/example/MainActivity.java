@@ -3,10 +3,12 @@ package com.xxl.example;
 import android.app.Application;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.xxl.example.mediator.dagger.MediatorDagger;
 import com.xxl.example.origin.ui.BaseActivity;
 
 import javax.inject.Inject;
@@ -180,6 +182,9 @@ public class MainActivity extends BaseActivity {
     public void setupLayout() {
         TextView testTv = findViewById(R.id.test_tv);
         testTv.setText(mUser.getApplication().toString()+"---"+mApplication.toString());
+        testTv.setOnClickListener(v -> {
+            MediatorDagger.startDagger();
+        });
     }
 
     /**

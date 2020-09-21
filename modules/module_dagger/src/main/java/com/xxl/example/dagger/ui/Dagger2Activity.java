@@ -9,12 +9,14 @@ import com.xxl.example.dagger.R;
 import com.xxl.example.mediator.dagger.IConstantDagger;
 import com.xxl.example.origin.ui.BaseActivity;
 
+import javax.inject.Inject;
+
 @Route(path = IConstantDagger.DAGGER_DAGGER)
 public class Dagger2Activity extends BaseActivity {
 
     //region: 成员变量
 
-    //@Inject
+    @Inject
     Dagger2ActivityViewModel mDagger2ActivityViewModel;
 
     //endregion
@@ -46,7 +48,7 @@ public class Dagger2Activity extends BaseActivity {
      */
     @Override
     protected void setupData(@Nullable Bundle savedInstanceState) {
-        //mDagger2ActivityViewModel.requestQueryUserInfo("123");
+        mDagger2ActivityViewModel.requestQueryUserInfo("123");
     }
     //endregion
 }
