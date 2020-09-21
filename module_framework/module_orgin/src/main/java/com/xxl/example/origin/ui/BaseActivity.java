@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.AndroidViewModel;
 
 import dagger.android.AndroidInjection;
 
@@ -55,6 +56,9 @@ public abstract class BaseActivity extends AppCompatActivity {
      * 设置数据
      */
     protected abstract void setupData(@Nullable Bundle savedInstanceState);
+
+    // TODO: 2020/9/21
+    //createViewModel
 
     //endregion
 
