@@ -6,7 +6,8 @@ import androidx.annotation.NonNull;
 
 import com.xxl.example.dagger.data.repository.DaggerRepository;
 
-import io.reactivex.Scheduler;
+import javax.inject.Inject;
+
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
@@ -27,6 +28,7 @@ public class Dagger2ActivityViewModel {
 
     //region: 构造函数
 
+   // @Inject
     public Dagger2ActivityViewModel(@NonNull DaggerRepository daggerRepository) {
         mDaggerRepository = daggerRepository;
     }

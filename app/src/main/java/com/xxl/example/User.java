@@ -1,5 +1,7 @@
 package com.xxl.example;
 
+import android.app.Application;
+
 /**
  * Created by xxl on 19/4/25.
  * <p>
@@ -9,7 +11,10 @@ public class User {
     private String nick;
     private String password;
 
-    public User() {
+    private Application mApplication;
+
+    public User(Application application) {
+        mApplication = application;
     }
 
 
@@ -29,4 +34,7 @@ public class User {
         this.password = password;
     }
 
+    public Application getApplication() {
+        return mApplication;
+    }
 }

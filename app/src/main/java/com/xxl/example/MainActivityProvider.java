@@ -4,6 +4,8 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 
+import com.xxl.example.origin.anotation.ForApplication;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -14,9 +16,11 @@ import dagger.Provides;
 @Module
 public class MainActivityProvider {
 
+    private Application mApplication;
+
     @Provides
-    User provideUser() {
-        return new User();
+    User provideUser(@ForApplication Application application) {
+        return new User(application);
     }
 
 

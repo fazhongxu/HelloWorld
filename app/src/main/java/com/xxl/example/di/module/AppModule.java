@@ -4,6 +4,8 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 
+import com.xxl.example.origin.anotation.ForApplication;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -16,6 +18,7 @@ import dagger.Provides;
 @Module
 public class AppModule {
 
+    @ForApplication
     @Singleton
     @Provides
     Application provideApplication(@NonNull final Application application) {

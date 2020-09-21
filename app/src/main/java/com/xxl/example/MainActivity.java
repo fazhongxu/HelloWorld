@@ -1,5 +1,6 @@
 package com.xxl.example;
 
+import android.app.Application;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
@@ -25,6 +26,9 @@ public class MainActivity extends BaseActivity {
 
     @Inject
     User mUser;
+
+    @Inject
+    Application mApplication;
 
 
 //    @Override
@@ -175,7 +179,7 @@ public class MainActivity extends BaseActivity {
     @Override
     public void setupLayout() {
         TextView testTv = findViewById(R.id.test_tv);
-        testTv.setText(mUser.toString());
+        testTv.setText(mUser.getApplication().toString()+"---"+mApplication.toString());
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.xxl.example;
 
-import com.xxl.example.di.component .DaggerAppComponent;
+import com.xxl.example.di.component.DaggerAppComponent;
 import com.xxl.example.origin.BaseApp;
 
 import dagger.Component;
@@ -24,7 +24,8 @@ public class App extends BaseApp {
      */
     @Override
     protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
-        return DaggerAppComponent.builder().application(this).build();
+        return DaggerAppComponent.builder().application(this)
+                .build();
     }
 
 }
